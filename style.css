@@ -3,4 +3,24 @@ body::before{
     content: '';
     height: 5px;
 }
+
 #bannerCarousel img { min-height: 300px; object-fit: cover; }
+
+.navbar-green {
+    background-color: #28a745 !important; /* 绿色背景 */
+}
+.navbar-green .navbar-brand,
+.navbar-green .nav-link {
+    color: #fff !important; /* 白色文字 */
+}
+.navbar-green .navbar-toggler {
+    border-color: #fff; /* 白色边框 */
+}
+.navbar-green .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+.navbar-green .nav-link.active,
+.navbar-green .nav-link:focus,
+.navbar-green .nav-link:hover {
+    color: #e2e6ea !important;
+}
