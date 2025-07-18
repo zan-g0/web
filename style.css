@@ -1,0 +1,6 @@
+body::before{
+    display:block;
+    content: '';
+    height: 5px;
+}
+#bannerCarousel img { min-height: 300px; object-fit: cover; }
