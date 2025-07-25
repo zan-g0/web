@@ -1,5 +1,5 @@
 // 自动加载 images/banner 文件夹下所有图片
-fetch('../banner-list.json')
+fetch('./js/banner-list.json')
     .then(res => res.json())
     .then(files => {
         const carouselInner = document.getElementById('carousel-inner');

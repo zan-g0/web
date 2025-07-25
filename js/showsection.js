@@ -17,7 +17,7 @@ function showSection(id) {
             // 如果是公司介绍，手动加载 banner.js
             if (id === 'about') {
                 const script = document.createElement('script');
-                script.src = '../banner.js';
+                script.src = '../js/banner.js';
                 document.body.appendChild(script);
             }
         });
