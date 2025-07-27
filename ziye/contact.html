@@ -16,6 +16,22 @@
                 </div>
             </div>
             <!-- 在线地图嵌入 -->
-
+            <div class="map mt-4">
+                <div id="container"></div>
+            </div>
+        </div>
+    </section>
 </section>
-
+<!-- 高德地图JS API，建议放在body结束前 -->
+<script src="https://webapi.amap.com/maps?v=2.0&key=e8410ee969a59932c7dbc8d70cde20b4"></script>
+<script>
+    window.onload = function() {
+        var map = new AMap.Map('container', {
+            center: [116.397428, 39.90923],
+            layers: [
+                AMap.createDefaultLayer()
+            ],
+            zoom: 13
+        });
+    }
+</script>
