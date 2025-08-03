@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-dark" style="background:#218a4a;">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background:#218a4a;">
     <div class="container-fluid">
       <h1 class="navbar-brand mb-0" style="font-size:22px;">浙江科原种业科学研究有限公司</h1>
       <button
@@ -67,7 +67,6 @@ a {
   transition: color 0.2s;
 }
 .content {
-    widows: 10%;
-    height: auto;
+  padding-top: 50px;
 }
 </style>
