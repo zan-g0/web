@@ -5,22 +5,33 @@
     :autoplay="{ delay: 3000, disableOnInteraction: false }"
   >
     <swiper-slide v-for="(slide, idx) in slides" :key="idx">
-      <img :src="slide.image" :alt="slide.title" />
+      <img :src="slide.image" :alt="'轮播'+(idx+1)" />
     </swiper-slide>
   </swiper>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
-const slides = [
-  { image: new URL('@/assets/images/banner/banner1.jpg', import.meta.url).href, title: '轮播1' },
-  { image: new URL('@/assets/images/banner/banner2.jpg', import.meta.url).href, title: '轮播2' }
-]
+const slides = ref<{ image: string }[]>([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('/api/banner.php'); 
+    slides.value = res.data.map(filename => ({
+      image: `/images/banner/${filename}` 
+    }));
+  } catch (error) {
+    console.error('加载轮播图失败:', error);
+  }
+});
 </script>
+
 <style scoped>
 .swiper-slide img {
   width: 100%;
