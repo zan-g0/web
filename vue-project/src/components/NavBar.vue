@@ -1,33 +1,54 @@
 <template>
-  <nav class="navbar">
-    <h1>浙江科原种业科学研究有限公司</h1>
-    <p>
-      <RouterLink to="/about">公司介绍</RouterLink>
-      <RouterLink to="/news">新闻中心</RouterLink>
-      <RouterLink to="/tech">科技创新</RouterLink>
-      <RouterLink to="/product">产品中心</RouterLink>
-      <RouterLink to="/job">人才招聘</RouterLink>
-      <RouterLink to="/contact">联系我们</RouterLink>
-    </p>
+  <nav class="navbar navbar-expand-md navbar-dark" style="background:#218a4a;">
+    <div class="container-fluid">
+      <h1 class="navbar-brand mb-0" style="font-size:22px;">浙江科原种业科学研究有限公司</h1>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#mainNav"
+        aria-controls="mainNav"
+        aria-expanded="false"
+        aria-label="切换导航"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item" v-for="item in navs" :key="item.to">
+            <RouterLink class="nav-link" :to="item.to" @click="closeMenu">{{ item.text }}</RouterLink>
+          </li>
+        </ul>
+      </div>
+    </div>
   </nav>
   <div class="content">
-    <RouterView /> <!--路由出口-->
+    <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
-</script>
+const navs = [
+  { to: "/about", text: "公司介绍" },
+  { to: "/news", text: "新闻中心" },
+  { to: "/tech", text: "科技创新" },
+  { to: "/product", text: "产品中心" },
+  { to: "/job", text: "人才招聘" },
+  { to: "/contact", text: "联系我们" }
+]
+function closeMenu() {
+  const nav = document.getElementById('mainNav')
+  // 关键：类型断言
+  const win = window as any
+  if (nav && nav.classList.contains('show')) {
+    win.bootstrap && win.bootstrap.Collapse
+      ? new win.bootstrap.Collapse(nav, { toggle: true })
+      : nav.classList.remove('show')
+  }
+}
+  </script>
 
 <style scoped>
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #218a4a;
-  color: #fff;
-  padding: 0 32px;
-  height: 64px;
-}
 .navbar h1 {
   font-size: 25px;
   margin: 0;

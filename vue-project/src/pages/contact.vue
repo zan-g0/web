@@ -84,8 +84,8 @@ onMounted(() => {
 .my-map {
   margin: 30px auto 0 auto;
   width: 100%;
-  max-width: 800px;
-  height: 400px;
+  max-width: 1000px;
+  height: 520px;
   min-height: 300px;
   background: #f8f8f8;
   border-radius: 10px;
