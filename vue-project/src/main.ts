@@ -7,8 +7,9 @@ import job from "@/pages/job.vue"
 import news from "@/pages/news.vue"
 import product from "@/pages/product.vue"
 import tech from "@/pages/tech.vue"
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'bootstrap/scss/bootstrap.scss'
+import 'bootstrap'
+
 // 1.配置路由规则
 const routes=[
     {path:"/", redirect:"/about"}, 
