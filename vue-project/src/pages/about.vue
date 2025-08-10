@@ -126,8 +126,8 @@ onMounted(fetchData);
 <style scoped>
 .fengcai_1 {
     width: 100%;
-    background: url(@/assets/images/about/fcbg.jpg;) no-repeat bottom center #32a463;
-    padding: 50px 0px;
+    background: url(/images/about/fcbg.jpg;) no-repeat bottom center #32a463;
+    padding: 10px 0px;
 }
 
 .fengcai_1_title {
