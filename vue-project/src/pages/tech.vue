@@ -14,7 +14,7 @@
                     </p>
                 </div>
                 <div class="col-md">
-                    <img src="/images/tech/tech_router.png" alt="1" class="img-fluid" />
+                    <img src="@/assets/images/tech/tech_router.png" alt="1" class="img-fluid" />
                 </div>
             </div>
         </div>
@@ -66,10 +66,10 @@
             <p class="lead text-center mb-5">浙江科原种业科学研究有限公司与XXX公司，XXX大学等多家科研院所（校）建立了紧密的合作关系，取得了良好的成效</p>
             <div class="row">
 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 img-row">
-                    <img src="/images/tech/1.jpg" class="mb-3">
+                    <img src="@/assets/images/tech/1.jpg" class="mb-3">
                 </div>
                 <div class="col-md-6 col-lg-3">
-                    <img src="/images/tech/2.jpg" class="mb-3">
+                    <img src="@/assets/images/tech/2.jpg" class="mb-3">
                 </div>
             </div>
         </div>

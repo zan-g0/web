@@ -3,7 +3,7 @@
         <div class="container">
             <div class="row align-items-center justify-content-between">
                 <div class="col-md">
-                    <img src="/images/door.png" alt="1" class="img-fluid" />
+                    <img src="@/assets/images/door.png" alt="1" class="img-fluid" />
                 </div>
                 <div class="col-md" p-5>
                     <h1>联系我们</h1>

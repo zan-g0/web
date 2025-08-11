@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2025-07-20 18:05:51
+-- 生成日期： 2025-08-10 22:52:48
 -- 服务器版本： 5.7.26
 -- PHP 版本： 7.3.4
 
@@ -24,150 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- 表的结构 `company_profile_qygk`
+-- 表的结构 `company_culture`
 --
 
-CREATE TABLE `company_profile_qygk` (
+CREATE TABLE `company_culture` (
   `id` int(11) NOT NULL,
-  `content` text COLLATE utf8_unicode_ci COMMENT '企业介绍HTML内容',
-  `img_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '企业介绍图片URL',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '标题',
+  `content` text COLLATE utf8_unicode_ci NOT NULL COMMENT '详细内容',
+  `icon_img` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '图标文件名',
+  `order` int(11) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
 --
--- 表的结构 `company_profile_ryzz`
+-- 转存表中的数据 `company_culture`
 --
 
-CREATE TABLE `company_profile_ryzz` (
-  `id` int(11) NOT NULL,
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '荣誉描述',
-  `img_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '荣誉图片url',
-  `updata_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `company_slides`
---
-
-CREATE TABLE `company_slides` (
-  `id` int(11) NOT NULL,
-  `image_url` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '轮播图URL'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `contact_information`
---
-
-CREATE TABLE `contact_information` (
-  `id` int(11) NOT NULL COMMENT '主键ID',
-  `company_phone` varchar(20) NOT NULL COMMENT '公司总机',
-  `sales_hotline` varchar(20) NOT NULL COMMENT '销售服务热线',
-  `fax` varchar(20) DEFAULT NULL COMMENT '传真号码',
-  `email` varchar(50) NOT NULL COMMENT '企业邮箱',
-  `address` varchar(100) NOT NULL COMMENT '详细地址',
-  `postal_code` char(6) DEFAULT NULL COMMENT '邮政编码',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `QRcode_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '二维码url'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企业联系信息表';
-
--- --------------------------------------------------------
-
---
--- 表的结构 `job_openings`
---
-
-CREATE TABLE `job_openings` (
-  `id` int(11) NOT NULL COMMENT '主键ID',
-  `position_name` varchar(50) NOT NULL COMMENT '岗位名称（如：水稻育种研究员）',
-  `position_requirements` text NOT NULL COMMENT '岗位要求（支持HTML格式）',
-  `salary_range` varchar(30) NOT NULL COMMENT '薪资待遇（如：8K-15K）',
-  `hire_number` tinyint(3) UNSIGNED NOT NULL COMMENT '招聘人数',
-  `is_published` tinyint(1) DEFAULT '0' COMMENT '是否发布（0-未发布 1-已发布）',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='人才招聘信息表';
-
--- --------------------------------------------------------
-
---
--- 表的结构 `news`
---
-
-CREATE TABLE `news` (
-  `id` int(11) NOT NULL,
-  `title` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `content` longtext COLLATE utf8_unicode_ci COMMENT '富文本内容',
-  `publish_time` datetime NOT NULL,
-  `view_count` int(11) DEFAULT '0',
-  `is_top` tinyint(1) DEFAULT '0' COMMENT '是否置顶'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `rice_products`
---
-
-CREATE TABLE `rice_products` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT '水稻品种名称',
-  `feature` text COLLATE utf8_unicode_ci COMMENT '产品特性',
-  `spec_params` json DEFAULT NULL COMMENT '规格参数JSON存储',
-  `cover_image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '封面图URL',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `company_culture` (`id`, `title`, `content`, `icon_img`, `order`, `is_active`) VALUES
+(1, '指导思想', '[\"产业为本,战略为势\",\"创新为魂,金融为器\"]', 'wh1.png', 1, 1),
+(2, '企业使命', '[\"引领农业,造富三农\",\"造福社会,保护自然\"]', 'wh2.png', 2, 1),
+(3, '指导思想', '[\"企业精神\",\"太阳每天都在升起\",\"我们每天都在努力\"]', 'wh3.png', 3, 1),
+(4, '质量方针', '[\"用心培育每一个品种\",\"精心生产每一粒种子\",\"真心善待每一位客户\"]', 'wh4.png', 4, 1),
+(5, '人文环境', '[\"围绕企业发展\",\"员工成长,回报社会\",\"追求和谐统一\"]', 'wh5.png', 5, 1),
+(6, '企业人才观', '[\"人品在先,注重能力\",\"任人唯贤,能上能下\",\"事业留人,感情留人\",\"待遇留人\"]', 'wh6.png', 6, 1),
+(7, '宣传用语', '[\"发展民族种业,致力高新科技\",\"诚信服务农业,播科原良种，奔小康生活\",\"品种源于创新，品质成就未来\"]', 'wh7.png', 7, 1);
 
 --
 -- 转储表的索引
 --
 
 --
--- 表的索引 `company_profile_qygk`
+-- 表的索引 `company_culture`
 --
-ALTER TABLE `company_profile_qygk`
-  ADD PRIMARY KEY (`id`);
-
---
--- 表的索引 `company_profile_ryzz`
---
-ALTER TABLE `company_profile_ryzz`
-  ADD PRIMARY KEY (`id`);
-
---
--- 表的索引 `company_slides`
---
-ALTER TABLE `company_slides`
-  ADD PRIMARY KEY (`id`);
-
---
--- 表的索引 `contact_information`
---
-ALTER TABLE `contact_information`
-  ADD PRIMARY KEY (`id`);
-
---
--- 表的索引 `job_openings`
---
-ALTER TABLE `job_openings`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_published` (`is_published`);
-
---
--- 表的索引 `news`
---
-ALTER TABLE `news`
-  ADD PRIMARY KEY (`id`);
-
---
--- 表的索引 `rice_products`
---
-ALTER TABLE `rice_products`
+ALTER TABLE `company_culture`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -175,46 +64,10 @@ ALTER TABLE `rice_products`
 --
 
 --
--- 使用表AUTO_INCREMENT `company_profile_qygk`
+-- 使用表AUTO_INCREMENT `company_culture`
 --
-ALTER TABLE `company_profile_qygk`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- 使用表AUTO_INCREMENT `company_profile_ryzz`
---
-ALTER TABLE `company_profile_ryzz`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- 使用表AUTO_INCREMENT `company_slides`
---
-ALTER TABLE `company_slides`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- 使用表AUTO_INCREMENT `contact_information`
---
-ALTER TABLE `contact_information`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID';
-
---
--- 使用表AUTO_INCREMENT `job_openings`
---
-ALTER TABLE `job_openings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID';
-
---
--- 使用表AUTO_INCREMENT `news`
---
-ALTER TABLE `news`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- 使用表AUTO_INCREMENT `rice_products`
---
-ALTER TABLE `rice_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `company_culture`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
