@@ -1,60 +1,128 @@
 <template>
-    <section class="p-5 bg-light">
-        <section class="p-5">
-    <div class="container">
+  <section class="p-5 bg-light">
+    <section class="p-5">
+      <div class="container">
         <h2 class="text-center mb-4">新闻中心</h2>
         <p class="lead text-center mb-5">传递企业动态与行业价值</p>
-        <div class="row">
-            <!-- 公司新闻 -->
-            <div class="col-md-4 mb-4">
-                <h4>公司新闻</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>新品种发布会圆满举行</strong><br>
-                        我司成功举办水稻新品种发布会，吸引众多行业专家与合作伙伴。
-                    </li>
-                    <li class="list-group-item">
-                        <strong>战略合作签约</strong><br>
-                        与知名农业企业签署战略合作协议，推动种业创新发展。
-                    </li>
-                    <li class="list-group-item">
-                        <strong>领导活动</strong><br>
-                        省政府领导莅临考察，国际交流持续深化。
-                    </li>
-                </ul>
-            </div>
-            <!-- 行业资讯 -->
-            <div class="col-md-4 mb-4">
-                <h4>行业资讯</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>政策解读</strong><br>
-                        新《种子法》专家分析，助力企业合规发展。
-                    </li>
-                    <li class="list-group-item">
-                        <strong>市场报告</strong><br>
-                        水稻种业白皮书节选，洞察行业趋势与机遇。
-                    </li>
-                </ul>
-            </div>
-            <!-- 田间纪实 -->
-            <div class="col-md-4 mb-4">
-                <h4>田间纪实</h4>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>品种试验跟踪报道</strong><br>
-                        科研团队深入田间，记录新品种生长表现。
-                    </li>
-                    <li class="list-group-item">
-                        <strong>农户种植案例</strong><br>
-                        “丰收故事”专题，分享农户成功经验与感人瞬间。
-                    </li>
-                </ul>
-            </div>
+        
+        <!-- 加载状态 -->
+        <div v-if="loading" class="text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">加载中...</span>
+          </div>
+          <p class="mt-2">正在加载新闻...</p>
         </div>
-    </div>
-</section>
-</section>
+        
+        <!-- 错误状态 -->
+        <div v-else-if="error" class="alert alert-danger text-center">
+          {{ error }}
+          <button @click="fetchNews" class="btn btn-sm btn-outline-danger ms-2">重试</button>
+        </div>
+        
+        <!-- 正常状态 -->
+        <div v-else class="row">
+          <!-- 动态渲染每个分类 -->
+          <div v-for="(category, index) in categories" :key="index" class="col-md-4 mb-4">
+            <h4>{{ category.name }}</h4>
+            <ul class="list-group list-group-flush">
+              <li v-for="newsItem in category.items" :key="newsItem.id" class="list-group-item">
+                <strong>{{ newsItem.title }}</strong><br>
+                {{ newsItem.content }}
+                <small class="text-muted d-block mt-1">{{ formatDate(newsItem.created_at) }}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
 </template>
-<script setup lang="ts"></script>
-<style></style>
+
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+
+// 定义新闻项接口
+interface NewsItem {
+  id: number;
+  class_name: string;
+  title: string;
+  content: string;
+  view_count: number;
+  is_top: boolean;
+  created_at: string;
+}
+
+// 响应式数据
+const newsData = ref<NewsItem[]>([]);
+const loading = ref(true);
+const error = ref('');
+
+// 计算属性：按分类分组新闻
+const categories = computed(() => {
+  const categoriesMap: Record<string, NewsItem[]> = {};
+  
+  // 按分类名称分组
+  newsData.value.forEach(item => {
+    if (!categoriesMap[item.class_name]) {
+      categoriesMap[item.class_name] = [];
+    }
+    categoriesMap[item.class_name].push(item);
+  });
+  
+  // 转换为数组格式
+  return Object.entries(categoriesMap).map(([name, items]) => ({
+    name,
+    items
+  }));
+});
+
+// 获取新闻数据
+const fetchNews = async () => {
+  try {
+    loading.value = true;
+    error.value = '';
+    const response = await fetch('/api/news');
+    
+    if (!response.ok) {
+      throw new Error(`获取新闻失败: ${response.status} ${response.statusText}`);
+    }
+    
+    newsData.value = await response.json();
+  } catch (err) {
+    console.error('获取新闻数据失败:', err);
+    error.value = err instanceof Error ? err.message : '未知错误';
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 格式化日期
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+};
+
+// 组件挂载时获取数据
+onMounted(() => {
+  fetchNews();
+});
+</script>
+
+<style scoped>
+.list-group-item {
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+  border-left-color: #0d6efd;
+}
+
+h4 {
+  color: #2c5e2e;
+  border-bottom: 2px solid #2c5e2e;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+</style>
