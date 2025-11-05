@@ -30,34 +30,36 @@ interface BannerItem {
 
 const slides = ref<BannerItem[]>([]);
 
-// 动态生成图片URL（核心修正）
+// 使用后端静态地址，优先读取 VITE_API_BASE 环境变量
+const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:3000';
 const getImageUrl = (filename: string) => {
-  try {
-    // 开发环境：直接使用文件系统路径
-    if (import.meta.env.DEV) {
-      return new URL(`/src/assets/images/banner/${filename}`, import.meta.url).href;
-    }
-    // 生产环境：使用打包后的路径
-    return `/assets/images/banner/${filename}`;
-  } catch (e) {
-    console.warn('图片路径生成失败:', e);
-  }
+  if (!filename) return '';
+  // filename 可能已包含路径或是仅文件名，这里以文件名为主
+  return `${API_BASE.replace(/\/$/, '')}/uploads/banners/${filename}`;
 };
 
-// 从API获取数据
+// 从API获取数据，兼容返回多种结构
 const fetchBanners = async () => {
   try {
     const response = await axios.get('/api/banners');
-        slides.value = response.data.map((filename: string) => ({
-      image: filename, // 只存储文件名
-      alt: `轮播图-${filename.replace(/\.[^/.]+$/, "")}` // 移除扩展名
-    }));
-    
+    // 支持后端返回 { data: [...] } 或直接返回 [...]
+    const payload = response.data?.data ?? response.data;
+    if (Array.isArray(payload)) {
+      slides.value = payload.map((item: any) => {
+        const filename = typeof item === 'string' ? item : (item.image_name ?? item.image ?? '');
+        return {
+          image: filename,
+          alt: `轮播图-${filename.replace(/\.[^/.]+$/, '')}`
+        };
+      });
+    } else {
+      slides.value = [];
+    }
   } catch (error) {
     console.error('加载轮播图失败:', error);
+    slides.value = [];
   }
 };
-
 
 onMounted(fetchBanners);
 </script>

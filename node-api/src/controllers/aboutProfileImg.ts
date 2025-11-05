@@ -8,13 +8,13 @@ interface ProfileImg {
 
 export const getProfileImage = async (req: Request, res: Response) => {
   try {
-    const [rows] = await pool.query<ProfileImg[]>(`
+    const [rows] = await pool.query(`
       SELECT img_name 
       FROM about_profile_img 
       WHERE is_active = 1 
       ORDER BY \`order\` ASC
     `);
-    res.json(rows.map(row => row.img_name));
+    res.json((rows as any[]).map(row => row.img_name));
   } catch (error) {
     console.error('[ProfileImg Error]', error);
     res.status(500).json({ error: 'Database query failed' });

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import express from "express";
 import bannerRouter from './banner';
 import companyProfileRouter from './companyProfile'; 
 import aboutProfileImgRouter from './aboutProfileImg'; 
@@ -8,6 +9,7 @@ import techRoutes from './tech';
 import productRoutes from './product';
 import jobRoutes from './job'; 
 import contactRoutes from './contact';
+import uploadRouter from './upload';
 
 const router = Router();
 
@@ -20,4 +22,5 @@ router.use('/tech', techRoutes);
 router.use('/products', productRoutes); 
 router.use('/jobs', jobRoutes); 
 router.use('/contact', contactRoutes); 
+router.use('/upload', uploadRouter);
 export default router;
