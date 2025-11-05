@@ -5,6 +5,7 @@ web
 │  ├─ .env
 │  ├─ package-lock.json
 │  ├─ package.json
+│  ├─ pnpm-lock.yaml
 │  ├─ src
 │  │  ├─ app.ts
 │  │  ├─ config
@@ -18,7 +19,8 @@ web
 │  │  │  ├─ job.ts
 │  │  │  ├─ news.ts
 │  │  │  ├─ product.ts
-│  │  │  └─ tech.ts
+│  │  │  ├─ tech.ts
+│  │  │  └─ upload.ts
 │  │  └─ routes
 │  │     ├─ aboutProfileImg.ts
 │  │     ├─ banner.ts
@@ -29,10 +31,14 @@ web
 │  │     ├─ job.ts
 │  │     ├─ news.ts
 │  │     ├─ product.ts
-│  │     └─ tech.ts
+│  │     ├─ tech.ts
+│  │     └─ upload.ts
 │  ├─ tsconfig.json
 │  └─ uploads
 │     └─ banners
+│        ├─ banner1.jpg
+│        ├─ banner2.jpg
+│        └─ banner3.jpg
 ├─ pure-admin-thin
 │  ├─ .browserslistrc
 │  ├─ .dockerignore
@@ -95,6 +101,8 @@ web
 │  ├─ README.md
 │  ├─ src
 │  │  ├─ api
+│  │  │  ├─ banner.ts
+│  │  │  ├─ request.ts
 │  │  │  ├─ routes.ts
 │  │  │  └─ user.ts
 │  │  ├─ App.vue
@@ -302,7 +310,7 @@ web
 │  │     │  ├─ 404.vue
 │  │     │  └─ 500.vue
 │  │     ├─ gsjs
-│  │     │  ├─ banner.vue
+│  │     │  ├─ banners.vue
 │  │     │  ├─ culture.vue
 │  │     │  ├─ honnor.vue
 │  │     │  └─ profile.vue
