@@ -102,7 +102,7 @@ interface HonorItem {
 const fetchData = async () => {
   try {
     const [profileRes, imagesRes, cultureRes, honorsRes] = await Promise.all([
-      axios.get('/api/company-profile'),
+      axios.get('/api/companyProfile'),
       axios.get('/api/about-images'),
       axios.get('/api/company-info/culture'),
       axios.get('/api/company-info/honors')
