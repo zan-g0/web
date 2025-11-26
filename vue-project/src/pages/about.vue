@@ -16,7 +16,7 @@
                     <img 
             v-for="(img, index) in profileImages" 
             :key="index"
-            :src="`/src/assets/images/about/${img}`"
+            :src="`http://localhost:3000/uploads/company/${img}`"
             :alt="`公司形象图${index + 1}`"          />
                 </div>
             </div>
@@ -61,7 +61,7 @@
           <div class="card bg-light">
             <div class="card-body text-center">
               <img 
-                :src="`/src/assets/images/about/${honor.image}`" 
+                :src="`http://localhost:3000/uploads/honnor/${honor.image}`" 
                 class="mb-3"
               />
               <h3 class="card-title">{{ honor.title }}</h3>

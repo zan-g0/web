@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="banner-management text-xl">
     <!-- 页面标题和操作栏 -->
     <div class="flex justify-between items-center mb-4">
@@ -214,9 +214,7 @@ const uploadHeaders = {
 };
 
 // 获取图片完整URL
-const getImageUrl = (imageName: string) => {
-  return `http://localhost:3000/uploads/banners/${imageName}`;
-};
+const getImageUrl = (imageName: string) => { if (!imageName) return ""; return `http://localhost:3000/uploads/banners/${imageName}`; };
 
 // 获取轮播图列表
 const fetchBanners = async () => {
@@ -327,7 +325,7 @@ const handleSubmit = async () => {
       formData.append("file", pendingFile.value);
       formData.append("newName", form.image_name); // 传递新文件名
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/upload/banner", {
         method: "POST",
         body: formData
       });
@@ -422,3 +420,8 @@ onMounted(() => {
   font-size: 1.4rem;
 }
 </style>
+
+
+
+
+

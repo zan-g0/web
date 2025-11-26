@@ -21,6 +21,14 @@ export default {
       }
     },
     {
+      path: "/gsjs/profile_img",
+      name: "公司简介图",
+      component: () => import("@/views/gsjs/profile_img.vue"),
+      meta: {
+        title: "公司简介图"
+      }
+    },
+    {
       path: "/gsjs/culture",
       name: "公司文化",
       component: () => import("@/views/gsjs/culture.vue"),
@@ -29,9 +37,9 @@ export default {
       }
     },
     {
-      path: "/gsjs/honnor",
+      path: "/gsjs/honnors",
       name: "荣誉资质",
-      component: () => import("@/views/gsjs/honnor.vue"),
+      component: () => import("@/views/gsjs/honnors.vue"),
       meta: {
         title: "荣誉资质"
       }

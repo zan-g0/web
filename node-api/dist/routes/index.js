@@ -1,0 +1,31 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const banner_1 = __importDefault(require("./banner"));
+const upload_1 = __importDefault(require("./upload"));
+const companyProfile_1 = __importDefault(require("./companyProfile"));
+const aboutProfileImg_1 = __importDefault(require("./aboutProfileImg"));
+const companyInfo_1 = __importDefault(require("./companyInfo"));
+const news_1 = __importDefault(require("./news"));
+const tech_1 = __importDefault(require("./tech"));
+const product_1 = __importDefault(require("./product"));
+const job_1 = __importDefault(require("./job"));
+const contact_1 = __importDefault(require("./contact"));
+const companyProfileImg_1 = __importDefault(require("./companyProfileImg"));
+const router = (0, express_1.Router)();
+router.use('/banners', banner_1.default);
+router.use('/upload', upload_1.default);
+router.use('/companyProfile', companyProfile_1.default);
+router.use('/about-images', aboutProfileImg_1.default);
+router.use('/company-info', companyInfo_1.default);
+router.use('/news', news_1.default);
+router.use('/tech', tech_1.default);
+router.use('/products', product_1.default);
+router.use('/jobs', job_1.default);
+router.use('/contact', contact_1.default);
+router.use("/companyProfileImg", companyProfileImg_1.default);
+router.use("/company-profile-img", companyProfileImg_1.default); // 兼容 kebab-case 前端
+exports.default = router;
