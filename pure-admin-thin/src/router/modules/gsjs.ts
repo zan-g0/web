@@ -1,7 +1,8 @@
 export default {
   path: "/gsjs",
   meta: {
-    title: "公司介绍"
+    title: "公司介绍",
+    rank:1
   },
   children: [
     {
