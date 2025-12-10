@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadDynamic = exports.uploadGeneral = exports.uploadNews = exports.uploadCompany = exports.uploadProfile = exports.uploadProduct = exports.uploadBanner = exports.uploadImage = exports.handleUpload = exports.generalUpload = exports.newsUpload = exports.companyUpload = exports.profileUpload = exports.productUpload = exports.bannerUpload = exports.upload = exports.createUpload = exports.UPLOAD_TYPES = void 0;
+exports.uploadDynamic = exports.uploadGeneral = exports.uploadNews = exports.uploadCompany = exports.uploadProfile = exports.uploadHonor = exports.uploadProduct = exports.uploadBanner = exports.uploadImage = exports.handleUpload = exports.honorUpload = exports.generalUpload = exports.newsUpload = exports.companyUpload = exports.profileUpload = exports.productUpload = exports.bannerUpload = exports.upload = exports.createUpload = exports.UPLOAD_TYPES = void 0;
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -20,7 +20,8 @@ exports.UPLOAD_TYPES = {
     PROFILE: 'profiles',
     COMPANY: 'company',
     NEWS: 'news',
-    GENERAL: 'general'
+    GENERAL: 'general',
+    HONOR: 'honor'
 };
 // 生成唯一的文件名
 const generateUniqueFileName = (originalName) => {
@@ -77,6 +78,7 @@ exports.profileUpload = (0, exports.createUpload)(exports.UPLOAD_TYPES.PROFILE);
 exports.companyUpload = (0, exports.createUpload)(exports.UPLOAD_TYPES.COMPANY);
 exports.newsUpload = (0, exports.createUpload)(exports.UPLOAD_TYPES.NEWS);
 exports.generalUpload = (0, exports.createUpload)(exports.UPLOAD_TYPES.GENERAL);
+exports.honorUpload = (0, exports.createUpload)(exports.UPLOAD_TYPES.HONOR);
 // 通用上传处理函数
 const handleUpload = async (req, res, uploadType) => {
     try {
@@ -126,6 +128,11 @@ const uploadProduct = async (req, res) => {
     await (0, exports.handleUpload)(req, res, exports.UPLOAD_TYPES.PRODUCT);
 };
 exports.uploadProduct = uploadProduct;
+//荣誉资质图上传
+const uploadHonor = async (req, res) => {
+    await (0, exports.handleUpload)(req, res, exports.UPLOAD_TYPES.HONOR);
+};
+exports.uploadHonor = uploadHonor;
 // 个人资料图片上传
 const uploadProfile = async (req, res) => {
     await (0, exports.handleUpload)(req, res, exports.UPLOAD_TYPES.PROFILE);

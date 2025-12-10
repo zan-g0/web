@@ -2,7 +2,7 @@
 export default {
   path: "/job",
   meta: {
-    title: "招聘",
+    title: "人才招聘",
     rank:5
 
   },
@@ -12,7 +12,7 @@ export default {
       name: "job",
       component: () => import("@/views/job/index.vue"),
       meta: {
-        title: "招聘",
+        title: "招聘岗位",
         // 通过设置showParent为true，显示父级
         showParent: true
       }

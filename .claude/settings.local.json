@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__mysql__executeQuery",
+      "mcp__mysql__getSampleData",
+      "Bash(npm start)",
+      "mcp__mysql__getTableSchema",
+      "Bash(pnpm build:*)",
+      "Bash(node dist/app.js)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "mysql"
+  ]
+}

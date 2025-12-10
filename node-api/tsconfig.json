@@ -12,8 +12,10 @@
     "typeRoots": [
       "./node_modules/@types",
       "./src/@types"
-    ]
+    ],
+    "skipLibCheck": true,
+    "allowJs": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/@types/**/*"],
   "exclude": ["node_modules"]
 }

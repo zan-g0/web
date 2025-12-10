@@ -30,7 +30,7 @@
               <div class="contact-list">
                 <div class="contact-item" v-if="contactInfo.company_phone">
                   <div class="contact-icon">
-                    <i class="bi bi-telephone"></i>
+                    <Phone />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">公司电话</span>
@@ -40,7 +40,7 @@
                 
                 <div class="contact-item" v-if="contactInfo.service_phone">
                   <div class="contact-icon">
-                    <i class="bi bi-headset"></i>
+                    <Headset />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">销售热线</span>
@@ -50,7 +50,7 @@
                 
                 <div class="contact-item" v-if="contactInfo.fax">
                   <div class="contact-icon">
-                    <i class="bi bi-printer"></i>
+                    <Printer />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">传真</span>
@@ -60,19 +60,17 @@
                 
                 <div class="contact-item" v-if="contactInfo.email">
                   <div class="contact-icon">
-                    <i class="bi bi-envelope"></i>
+                    <Message />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">邮箱</span>
-                    <a :href="`mailto:${contactInfo.email}`" class="contact-value contact-link">
-                      {{ contactInfo.email }}
-                    </a>
+                    <span class="contact-value">{{ contactInfo.email}}</span>
                   </div>
                 </div>
                 
                 <div class="contact-item" v-if="contactInfo.postal_code">
                   <div class="contact-icon">
-                    <i class="bi bi-mailbox"></i>
+                    <House />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">邮编</span>
@@ -82,7 +80,7 @@
                 
                 <div class="contact-item" v-if="contactInfo.address">
                   <div class="contact-icon">
-                    <i class="bi bi-geo-alt"></i>
+                    <Location />
                   </div>
                   <div class="contact-content">
                     <span class="contact-label">地址</span>
@@ -111,6 +109,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { Phone, Headset, Printer, Message, House, Location } from '@element-plus/icons-vue';
 
 interface ContactInfo {
   id: number;
@@ -133,14 +132,14 @@ const fetchContactInfo = async () => {
     loading.value = true;
     error.value = '';
     
-    const response = await fetch('/api/contact');
+    const response = await fetch('/api/contact/admin?page=1&size=1');
     
     if (!response.ok) {
       throw new Error(`获取联系信息失败: ${response.status} ${response.statusText}`);
     }
     
     const data = await response.json();
-    contactInfo.value = data || {};
+    contactInfo.value = data.data?.[0] || {};
     
     // 初始化地图
     initMap();
@@ -288,9 +287,10 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.contact-icon i {
+.contact-icon svg {
   color: white;
-  font-size: 1.2rem;
+  width: 24px;
+  height: 24px;
 }
 
 .contact-content {

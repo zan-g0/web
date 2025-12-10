@@ -95,7 +95,7 @@ const deleteCompanyProfileImg = async (req, res) => {
         }
         // 删除图片文件
         if (imgName) {
-            const imgPath = path_1.default.join(__dirname, "../../uploads/about_profile_img", imgName);
+            const imgPath = path_1.default.join(__dirname, "../../uploads/company", imgName);
             fs_1.default.unlink(imgPath, err => {
                 // 不影响主流程，失败只记录日志
                 if (err && err.code !== "ENOENT") {

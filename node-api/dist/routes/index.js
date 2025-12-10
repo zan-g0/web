@@ -15,6 +15,7 @@ const product_1 = __importDefault(require("./product"));
 const job_1 = __importDefault(require("./job"));
 const contact_1 = __importDefault(require("./contact"));
 const companyProfileImg_1 = __importDefault(require("./companyProfileImg"));
+const honnor_1 = __importDefault(require("./honnor"));
 const router = (0, express_1.Router)();
 router.use('/banners', banner_1.default);
 router.use('/upload', upload_1.default);
@@ -28,4 +29,6 @@ router.use('/jobs', job_1.default);
 router.use('/contact', contact_1.default);
 router.use("/companyProfileImg", companyProfileImg_1.default);
 router.use("/company-profile-img", companyProfileImg_1.default); // 兼容 kebab-case 前端
+router.use("/companyHonnors", honnor_1.default);
+router.use("/company-honnors", honnor_1.default); // 兼容前端不同写法
 exports.default = router;
