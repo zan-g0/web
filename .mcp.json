@@ -11,5 +11,9 @@
         "SQL_MCP_DB_NAME": "web"
       }
     }
+  },
+    "streamable-mcp-server": {
+      "type": "streamable-http",
+      "url": "http://127.0.0.1:12306/mcp"
+    }
   }
-}

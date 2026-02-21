@@ -1,5 +1,15 @@
 {
 	"dependencies": {
-		"@element-plus/icons-vue": "^2.3.2"
+		"@element-plus/icons-vue": "^2.3.2",
+		"element-plus": "^2.13.0"
+	},
+	"devDependencies": {
+		"@tailwindcss/forms": "^0.5.11",
+		"@tailwindcss/postcss": "^4.1.18",
+		"@tailwindcss/typography": "^0.5.19",
+		"@tailwindcss/vite": "^4.1.18",
+		"autoprefixer": "^10.4.23",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^4.1.18"
 	}
 }

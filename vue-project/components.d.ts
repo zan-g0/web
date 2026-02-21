@@ -9,7 +9,10 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Banner: typeof import('./src/components/banner.vue')['default']
+    CompanyProfileSection: typeof import('./src/components/about/CompanyProfileSection.vue')['default']
+    CultureValuesSection: typeof import('./src/components/about/CultureValuesSection.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
+    HonorGallerySection: typeof import('./src/components/about/HonorGallerySection.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']

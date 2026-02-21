@@ -95,8 +95,8 @@
           <div class="col-lg-7 col-md-6">
             <div class="map-container h-100">
               <div class="map-header">
-                <h3 class="map-title">公司位置</h3>
-                <p class="map-subtitle">欢迎前来参观洽谈</p>
+                <h3 class="contact-title">公司位置</h3>
+                <div class="contact-divider"></div>
               </div>
               <div id="mapContainer" class="map-content"></div>
             </div>
@@ -218,7 +218,7 @@ onMounted(() => {
 
 <style scoped>
 .contact-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(0,0,0,0.1);
@@ -327,7 +327,7 @@ onMounted(() => {
 
 /* 地图样式 */
 .map-container {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 40px rgba(0,0,0,0.1);
@@ -339,18 +339,6 @@ onMounted(() => {
 .map-header {
   text-align: center;
   margin-bottom: 1.5rem;
-}
-
-.map-title {
-  color: #2c5e2e;
-  font-weight: 700;
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.map-subtitle {
-  color: #666;
-  font-size: 1.1rem;
 }
 
 .map-content {
@@ -402,8 +390,41 @@ onMounted(() => {
   }
 }
 
-/* 确保两个容器高度一致 */
+/* 确保两个容器高度一致并在宽屏时左右并列 */
 .row.align-items-stretch {
   min-height: 500px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between; /* 左右两列固定宽度，中间留出剩余空间 */
+  gap: 0;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 指定左右列在中大屏幕的宽度比 (left: ~41.7%, right: ~58.3%) */
+@media (min-width: 768px) {
+  /* 左侧约 30%，右侧约 60%，中间剩余 ~10% 作为间隙 */
+  .row.align-items-stretch > .col-lg-5 {
+    flex: 0 0 35%;
+    max-width: 35%;
+  }
+
+  .row.align-items-stretch > .col-lg-7 {
+    flex: 0 0 64%;
+    max-width: 64%;
+  }
+}
+
+/* 小屏幕强制垂直堆叠，移除行内间距 */
+@media (max-width: 767.98px) {
+  .row.align-items-stretch {
+    display: block;
+  }
+
+  .row.align-items-stretch > [class*="col-"] {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+  }
 }
 </style>
