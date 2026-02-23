@@ -66,10 +66,8 @@ onUnmounted(() => {
   padding: 12px;
   font-size: 20px;
   letter-spacing: 1px;
-  margin-top: 40px;
 }
 
-/* 固定底部时的样式（视觉与布局） */
 .fixed-footer {
   position: fixed;
   left: 0;
@@ -77,6 +75,6 @@ onUnmounted(() => {
   width: 100%;
   z-index: 50;
   box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-  margin-top: 0; /* 覆盖原有 margin，避免额外空隙 */
+  margin-top: 0;
 }
 </style>

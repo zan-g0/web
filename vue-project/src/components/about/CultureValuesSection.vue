@@ -48,12 +48,11 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-const props = defineProps({
-  culture: {
-    type: Array,
-    required: true
-  }
-});
+import { useCompanyData } from '@/composables/useCompanyData';
+
+const props = defineProps<{
+  culture: ReturnType<typeof useCompanyData>['data']['value']['culture'];
+}>();
 </script>
 
 <style scoped>

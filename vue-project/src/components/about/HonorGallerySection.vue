@@ -53,12 +53,11 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-const props = defineProps({
-  honors: {
-    type: Array,
-    required: true
-  }
-});
+import { useCompanyData } from '@/composables/useCompanyData';
+
+const props = defineProps<{
+  honors: ReturnType<typeof useCompanyData>['data']['value']['honors'];
+}>();
 </script>
 
 <style scoped>

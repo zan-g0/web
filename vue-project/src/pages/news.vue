@@ -53,15 +53,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 
-interface NewsItem {
-  id: number;
-  title: string;
-  summary: string;
-  cover_image?: string | null;
-  category?: string | null;
-  publish_date?: string | null;
-  views?: number;
-}
+import type { NewsItem } from '@/types/news';
 
 const items = ref<NewsItem[]>([]);
 const page = ref(1);
@@ -181,7 +173,6 @@ function formatContent(raw?: string | null) {
 <style scoped>
 .page-bg {
   background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
-  min-height: 100vh;
 }
 
 .news-page {

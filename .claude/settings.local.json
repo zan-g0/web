@@ -22,7 +22,8 @@
       "Bash(start http://localhost:5174)",
       "Bash(pnpm add:*)",
       "Bash(del \"D:/2/web/vue-project/postcss.config.cjs\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(npm run build:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

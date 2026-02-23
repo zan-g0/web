@@ -53,6 +53,5 @@ const { data, loading, error, retry } = useCompanyData();
 }
 .page-bg {
   background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
-  min-height: 100vh;
 }
 </style>

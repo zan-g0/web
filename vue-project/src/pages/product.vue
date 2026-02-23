@@ -3,8 +3,6 @@
     <div class="product-page">
       <h2 class="product-title">产品中心</h2>
       <div class="job-divider"></div>
-      <p class="lead mb-5 text-center">以下是我公司的产品展示</p>
-
       <!-- 加载状态 -->
       <div v-if="loading" class="text-center">
         <div class="spinner-border text-primary" role="status">
@@ -19,19 +17,22 @@
         <button @click="fetchProducts" class="btn btn-sm btn-outline-danger ms-2">重试</button>
       </div>
 
-      <!-- 产品列表 -->
-      <div class="product-page">
-        <div v-for="product in filteredProducts" :key="product.id" class="mb-4">
-          <div
-            class="product-card rounded-xl overflow-hidden bg-white h-full transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-            <div class="p-4 text-center flex flex-col">
-              <img :src="getImageUrl(product.image_url)" :alt="product.name"
-                class="mb-3 w-full product-image transition-transform duration-300 hover:scale-105" loading="lazy"
+      <!-- 产品列表（响应式网格） -->
+      <div class="product-grid">
+        <div v-for="product in filteredProducts" :key="product.id">
+          <div class="product-card rounded-xl overflow-hidden bg-white">
+            <div class="image-wrap">
+              <img :src="`http://localhost:3000/uploads/product/${product.image_url}`" :alt="product.name"
+                class="product-image transition-transform duration-300 hover:scale-105" loading="lazy"
                 @error="handleImageError" />
-              <h3 class="font-bold text-lg text-gray-900">{{ product.name }}</h3>
-              <p class="card-text flex-grow-1">{{ product.description }}</p>
-              <span class="inline-block px-2 py-1 mt-2 text-sm font-medium rounded bg-gray-200 text-gray-700">{{
-                product.category }}</span>
+            </div>
+
+            <div class="p-4 card-body text-left">
+              <h3 class="product-name">{{ product.name }}</h3>
+              <p class="product-desc">{{ product.description }}</p>
+              <div class="card-footer">
+                <span class="inline-block px-2 py-1 mt-2 text-sm font-medium rounded bg-gray-200 text-gray-700">{{ product.category }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -159,21 +160,10 @@ onMounted(() => {
 /* 图片高度微调，避免过大占用卡片 */
 .product-image {
   width: 100%;
-  max-height: 160px;
-  /* 适当减小 */
-  object-fit: contain;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
   transition: transform 0.25s ease;
 }
 
-/* 更小屏幕上适当缩小图片高度 */
-@media (max-width: 640px) {
-  .product-image {
-    max-height: 120px;
-  }
-}
 
 .btn-group .btn {
   border-radius: 20px;
@@ -196,7 +186,7 @@ onMounted(() => {
 
 .product-page {
   padding: 40px;
-  max-width: 980px;
+  max-width: 1200px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
@@ -218,5 +208,97 @@ onMounted(() => {
   background: linear-gradient(90deg, transparent, #2c5e2e, transparent);
   width: 80px;
   margin: 0 auto;
+}
+
+/* 新增：响应式网格与卡片改进 */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 50px;
+  align-items: stretch;
+  margin-top: 24px;
+}
+
+.product-card {
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  border: 1px solid rgba(44, 94, 46, 0.06);
+  box-shadow: 0 2px 6px rgba(28, 49, 27, 0.03);
+  background: linear-gradient(180deg, #ffffff 0%, #fcfff9 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 34px rgba(28, 49, 27, 0.12);
+  border-color: rgba(44, 94, 46, 0.18);
+}
+
+.image-wrap {
+  width: 100%;
+  padding-top: 66.666%; /* 3:2 比例 */
+  position: relative;
+  overflow: hidden;
+  background: #f6faf5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-wrap .product-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 88%;
+  max-height: 88%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name {
+  color: #16381b;
+  font-weight: 700;
+  font-size: 1.02rem;
+  margin: 0 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-desc {
+  color: #4b5b4a;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  align-items: center;
+}
+
+.product-page {
+  padding-bottom: 30px;
 }
 </style>

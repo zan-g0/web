@@ -152,62 +152,144 @@ const fetchContactInfo = async () => {
   }
 };
 
-// 初始化地图
-const initMap = () => {
-  const script = document.createElement('script');
-  script.src = 'https://webapi.amap.com/maps?v=1.3&key=e07ffdf58c8e8672037bef0d6cae7d4a';
-  script.onload = () => {
-    // @ts-ignore
-    const AMap = window.AMap;
-    if (!AMap) return;
+// 异步加载 AMap 并初始化地图（防止重复注入脚本与在 API 未就绪时实例化）
+const loadAMap = (): Promise<any> => {
+  const win = window as any;
+  // 如果已经加载并且 Map 构造函数可用，直接返回
+  if (win.AMap && typeof win.AMap.Map === 'function') {
+    return Promise.resolve(win.AMap);
+  }
+
+  // 若已有加载中的 promise，复用它
+  if (win.__amapPromise) return win.__amapPromise;
+
+  const key = 'e07ffdf58c8e8672037bef0d6cae7d4a';
+  const src = `https://webapi.amap.com/maps?v=1.3&key=${key}`;
+
+  const p = new Promise<any>((resolve, reject) => {
+    let script = document.querySelector('script[data-amap]') as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.setAttribute('data-amap', '1');
+      script.onerror = () => reject(new Error('AMap script load error'));
+      document.head.appendChild(script);
+    }
+
+    const start = Date.now();
+    const timeout = 10000; // 10s 超时
+
+    const checkReady = () => {
+      if (win.AMap && typeof win.AMap.Map === 'function') {
+        resolve(win.AMap);
+      } else if (Date.now() - start > timeout) {
+        reject(new Error('AMap 加载超时'));
+      } else {
+        setTimeout(checkReady, 200);
+      }
+    };
+
+    // 当脚本已经存在且可能已加载，立即开始轮询检测
+    script.onload = () => {
+      checkReady();
+    };
+
+    // 如果脚本已经加载（比如从缓存），也开始检测
+    checkReady();
+  });
+
+  win.__amapPromise = p;
+  return p;
+};
+
+// 初始化地图：等待容器准备好并在构造失败时重试，适应 SPA 路由切换场景
+const initMap = async () => {
+  const MAX_RETRIES = 6;
+  const RETRY_DELAY = 300; // ms
+
+  const waitForContainer = async (): Promise<HTMLElement> => {
+    let attempts = 0;
+    while (attempts < MAX_RETRIES) {
+      const el = document.getElementById('mapContainer');
+      if (el && el.clientWidth > 10 && el.clientHeight > 10) return el;
+      // 如果元素存在但为 0 高度或隐藏，等待并重试
+      await new Promise(res => setTimeout(res, RETRY_DELAY));
+      attempts++;
+    }
+    // 最后返回 whatever exists (可能为 null)，让调用方处理失败
+    const fallback = document.getElementById('mapContainer');
+    if (!fallback) throw new Error('mapContainer not found');
+    return fallback;
+  };
+
+  try {
+    const AMap = await loadAMap();
+    await waitForContainer();
 
     const center = { lng: 120.56871, lat: 27.994735 };
     const address = contactInfo.value.address || '浙江省温州市瓯海区郭溪街道西陶路12号4幢';
 
-    const map = new AMap.Map("mapContainer", {
-      center: [center.lng, center.lat],
-      level: 17,
-      keyboardEnable: true,
-      dragEnable: true,
-      scrollWheel: true,
-      doubleClickZoom: true,
-      zoom: 16
-    });
+    let lastErr: any = null;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const map = new AMap.Map('mapContainer', {
+          center: [center.lng, center.lat],
+          level: 17,
+          keyboardEnable: true,
+          dragEnable: true,
+          scrollWheel: true,
+          doubleClickZoom: true,
+          zoom: 16,
+        });
 
-    // 添加标记
-    const marker = new AMap.Marker({
-      map,
-      position: [center.lng, center.lat],
-      icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
-      offset: new AMap.Pixel(-13, -30),
-    });
+        // 添加标记
+        const marker = new AMap.Marker({
+          map,
+          position: [center.lng, center.lat],
+          icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
+          offset: new AMap.Pixel(-13, -30),
+        });
 
-    // 信息窗口
-    const infoWindow = new AMap.InfoWindow({
-      content: `
-        <div style="padding: 10px; max-width: 250px;">
-          <div style="font-size: 16px; font-weight: bold; color: #2c5e2e; margin-bottom: 8px;">
-            <i class="bi bi-building"></i> 浙江科原种业有限公司
-          </div>
-          <div style="font-size: 14px; color: #666; line-height: 1.4;">
-            ${address}
-          </div>
-        </div>
-      `,
-      offset: new AMap.Pixel(0, -40)
-    });
-    
-    // 自动打开信息窗口
-    setTimeout(() => {
-      infoWindow.open(map, [center.lng, center.lat]);
-    }, 1000);
+        const infoWindow = new AMap.InfoWindow({
+          content: `
+            <div style="padding: 10px; max-width: 250px;">
+              <div style="font-size: 16px; font-weight: bold; color: #2c5e2e; margin-bottom: 8px;">
+                <i class="bi bi-building"></i> 浙江科原种业有限公司
+              </div>
+              <div style="font-size: 14px; color: #666; line-height: 1.4;">
+                ${address}
+              </div>
+            </div>
+          `,
+          offset: new AMap.Pixel(0, -40),
+        });
 
-    marker.on('click', () => {
-      infoWindow.open(map, [center.lng, center.lat]);
-    });
-  };
-  
-  document.body.appendChild(script);
+        setTimeout(() => {
+          try { infoWindow.open(map, [center.lng, center.lat]); } catch (e) {}
+        }, 500);
+
+        marker.on('click', () => { infoWindow.open(map, [center.lng, center.lat]); });
+
+        // 若容器尺寸变化导致地图未正确渲染，调用窗口 resize 逻辑
+        setTimeout(() => {
+          try { map && typeof map.setStatus === 'function' && map.setStatus(); } catch (e) {}
+        }, 600);
+
+        // 成功则返回
+        return;
+      } catch (err) {
+        lastErr = err;
+        // 如果是内部库因为某些未就绪状态抛出的类型错误，等待再重试
+        await new Promise(res => setTimeout(res, RETRY_DELAY));
+      }
+    }
+
+    // 所有重试失败，记录错误
+    console.error('初始化地图失败（重试后）:', lastErr);
+  } catch (err) {
+    console.error('初始化地图失败:', err);
+  }
 };
 
 // 组件挂载时获取数据

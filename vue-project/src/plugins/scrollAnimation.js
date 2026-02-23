@@ -1,4 +1,5 @@
-export default {
+const plugin = {
+  version: '1.0.0',
   install(app) {
     // 添加平滑滚动动画
     app.directive('scroll-animate', {
@@ -40,3 +41,5 @@ export default {
     document.head.appendChild(style);
   }
 };
+
+export default plugin;

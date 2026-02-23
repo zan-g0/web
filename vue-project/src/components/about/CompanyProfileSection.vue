@@ -39,16 +39,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-const props = defineProps({
-  profile: {
-    type: Array,
-    required: true
-  },
-  images: {
-    type: Array,
-    required: true
-  }
-});
+import { useCompanyData } from '@/composables/useCompanyData';
+
+const props = defineProps<{
+  profile: ReturnType<typeof useCompanyData>['data']['value']['profile'];
+  images: ReturnType<typeof useCompanyData>['data']['value']['images'];
+}>();
 
 </script>
 <style scoped>

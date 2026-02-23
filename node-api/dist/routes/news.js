@@ -7,4 +7,5 @@ const express_1 = __importDefault(require("express"));
 const news_1 = require("../controllers/news");
 const router = express_1.default.Router();
 router.get('/', news_1.getNews);
+router.get('/:id', news_1.getNewsDetail);
 exports.default = router;
