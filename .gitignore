@@ -1,2 +1,4 @@
 node_modules
 pure-admin-thin
+.claude
+dist
