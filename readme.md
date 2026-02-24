@@ -1,4 +1,4 @@
-📦 项目运行说明
+📦 项目运行说明(生产环境)
 
 1\. 数据库配置
 
@@ -16,23 +16,15 @@
 
 2\. 后端启动
 
-进入 node-api/dist 目录，执行以下命令：
-
-
-
-bash
-
+```bash
+cd ./node-api/dist
 node app.js
+```
 
 3\. 前端启动
 
-进入 vue-project/dist 目录，执行以下命令：
-
-
-
-bash
-
+```bash
+cd ./vue-project/dist
 serve -s . -p 8080
-
+```
 注：-p 参数后的端口可自定义，若修改端口，需在 node-api/app.js 中对应添加允许的端口。
-
