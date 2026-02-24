@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-
+import { axiosInstance } from '@/api/index';
 interface JobPosition {
   id: number;
   category: string;
@@ -120,24 +120,21 @@ async function fetchJobs() {
     });
     if (search.value) params.append('search', search.value);
 
-    const res = await fetch(`/api/jobs/positions?${params.toString()}`);
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || `HTTP ${res.status}`);
-    }
-    const data = await res.json();
+    const response = await axiosInstance.get(`/job?${params.toString()}`);
+    const data = response.data;
+    
     if (data && data.code === 0) {
-      jobs.value = data.data.items || [];
-      total.value = data.data.total || 0;
+      jobs.value = data.data?.items || [];
+      total.value = data.data?.total || 0;
     } else if (Array.isArray(data)) {
       jobs.value = data;
       total.value = data.length;
     } else {
-      throw new Error('获取岗位数据失败');
+      throw new Error(data?.message || '获取岗位数据失败');
     }
   } catch (e: any) {
     console.error('[fetchJobs error]', e);
-    error.value = e?.message || '数据请求失败';
+    error.value = e.response?.data?.message || e.message || '数据请求失败';
     jobs.value = [];
     total.value = 0;
   } finally {

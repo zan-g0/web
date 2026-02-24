@@ -111,11 +111,9 @@
       if (data && data.code === 0 && data.data) {
         products.value = data.data.items || [];
         total.value = data.data.total || 0;
-        // 保持当前分页（后端返回的 page/pageSize 可覆盖）
         page.value = data.data.page || page.value;
         pageSize.value = data.data.pageSize || pageSize.value;
       } else if (Array.isArray(data)) {
-        // 兼容旧接口：直接数组
         products.value = data;
         total.value = data.length;
       } else {

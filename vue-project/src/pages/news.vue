@@ -53,7 +53,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { getUploadUrl } from '@/utils/urls';
 import type { NewsItem } from '@/types/news';
-
+import { axiosInstance } from '@/api/index';
 const items = ref<NewsItem[]>([]);
 const page = ref(1);
 const pageSize = ref(5);
@@ -74,8 +74,9 @@ async function fetchNews() {
     });
     if (search.value) params.append('search', search.value);
 
-    const res = await fetch(`/api/news?${params.toString()}`);
-    const data = await res.json();
+    const response = await axiosInstance.get(`/news?${params.toString()}`);
+    const data = response.data; 
+    
     if (data && data.code === 0) {
       items.value = data.data.items;
       total.value = data.data.total;
@@ -112,19 +113,18 @@ onMounted(() => {
 async function openDetail(id: number) {
   try {
     detailLoading.value = true;
-    const res = await fetch(`/api/news/${id}`);
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || `HTTP ${res.status}`);
-    }
-    const data = await res.json();
+    
+    // 使用 axiosInstance 的正确方式
+    const response = await axiosInstance.get(`/news/${id}`); // 注意这里应该使用 id 参数
+    const data = response.data; // axios 自动解析 JSON
+    
     if (data && data.code === 0) {
       selected.value = data.data as NewsItem & { content?: string };
     } else {
       console.error('news detail error', data);
     }
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error('openDetail error:', err);
   } finally {
     detailLoading.value = false;
   }
