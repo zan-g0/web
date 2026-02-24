@@ -7,6 +7,8 @@ const app = express();
 // 中间件
 app.use(cors({
   origin: [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080", // 前端开发服务器
     "http://localhost:5173", // 前端
     "http://localhost:8848", // 后台管理
     "http://localhost:3000", // 后端端口

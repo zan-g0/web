@@ -295,7 +295,6 @@ onMounted(() => {
   padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(0,0,0,0.1);
   border: 1px solid rgba(44, 94, 46, 0.1);
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -326,14 +325,14 @@ onMounted(() => {
 .contact-list {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 2rem;
   flex-grow: 1;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 2rem;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -403,7 +402,7 @@ onMounted(() => {
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  height: 100%;
+  height: 90%;
   display: flex;
   flex-direction: column;
 }
