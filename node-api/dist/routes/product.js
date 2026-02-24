@@ -6,6 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const product_1 = require("../controllers/product");
 const router = express_1.default.Router();
-router.get('/', product_1.getProducts);
-// 移除分类路由
+router.get("/", product_1.getProducts);
 exports.default = router;

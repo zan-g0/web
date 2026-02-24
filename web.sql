@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost
--- 生成日期： 2026-02-21 22:55:08
+-- 生成日期： 2026-02-24 19:51:13
 -- 服务器版本： 5.7.26
 -- PHP 版本： 7.3.4
 
@@ -145,11 +145,9 @@ CREATE TABLE `contact_info` (
   `id` int(11) NOT NULL,
   `company_phone` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '公司电话',
   `service_phone` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '销售服务热线',
-  `fax` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '传真',
   `email` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '邮箱',
   `postal_code` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '邮编',
   `address` text COLLATE utf8_unicode_ci COMMENT '地址',
-  `is_active` tinyint(1) DEFAULT '1' COMMENT '是否激活',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -158,8 +156,8 @@ CREATE TABLE `contact_info` (
 -- 转存表中的数据 `contact_info`
 --
 
-INSERT INTO `contact_info` (`id`, `company_phone`, `service_phone`, `fax`, `email`, `postal_code`, `address`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, '188 1500 3185', '188 1500 3185', '188 1500 3185', 'contact@company.com', '325000', '浙江省温州市瓯海区郭溪街道西陶路12号4幢', 1, '2025-08-24 02:13:43', '2026-02-07 12:30:59');
+INSERT INTO `contact_info` (`id`, `company_phone`, `service_phone`, `email`, `postal_code`, `address`, `created_at`, `updated_at`) VALUES
+(1, '188 1500 3185', '188 1500 3185', 'contact@company.com', '325000', '浙江省温州市瓯海区郭溪街道西陶路12号4幢', '2025-08-24 02:13:43', '2026-02-07 12:30:59');
 
 -- --------------------------------------------------------
 
@@ -202,10 +200,8 @@ CREATE TABLE `news` (
   `content` longtext COLLATE utf8mb4_unicode_ci,
   `cover_image` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tags` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `author` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` enum('draft','published') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
-  `is_featured` tinyint(1) DEFAULT '0',
   `views` int(10) UNSIGNED DEFAULT '0',
   `publish_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -216,10 +212,10 @@ CREATE TABLE `news` (
 -- 转存表中的数据 `news`
 --
 
-INSERT INTO `news` (`id`, `title`, `summary`, `content`, `cover_image`, `category`, `tags`, `author`, `status`, `is_featured`, `views`, `publish_date`, `created_at`, `updated_at`) VALUES
-(1, '公司荣获绿色示范企业', '公司在环保方面获得行业认可', '    优质稻品种食味品质鉴评活动的开展，旨在评选出适宜安徽省种植的优质食味水稻品种，进一步满足农业供给侧结构性改革对优质稻米品种的需求，推动我省水稻产业向优质化、品牌化方向发展。\r\n    我司参选的中籼品种泰两优1413，在此次评选中荣获金奖，充分展示了其米质的优质和口感的优越。同时在多年的大田推广中，泰两优1413以其强抗倒，分蘖能力强，有效穗多，结实率高保证了广大种植户的高产需求。\r\n    集高产与优质于一身的泰两优1413，以其超高的整精米率（平均整精米率达70%），深受各地米厂喜爱。和其他产品相比泰两优1413每百斤稻谷能多打出几斤大米，对于米厂来说商业价值和利润空间大大提升！', 'cover1.jpg', '公司新闻', NULL, '张经理', 'published', 0, 23, '2026-02-01 09:00:00', '2026-02-21 22:01:42', '2026-02-21 22:54:24'),
-(2, '新品上市：智能农业监测系统', '简介与应用场景', '详细内容...', 'cover2.jpg', '产品新闻', NULL, '李工程师', 'published', 0, 17, '2026-02-10 10:00:00', '2026-02-21 22:01:42', '2026-02-21 22:54:23'),
-(3, '热烈祝贺高产优质品种泰两优1413荣获2021年安徽省优质稻食味品质金奖', '公司成就', '1月16日下午，2021年（第三届）安徽省优质稻品种食味品质鉴评活动在合肥举行。安徽省种子管理总站、安徽省水稻产业技术体系、安徽省种子协会联合组织专家对征集的优质米品种进行现场食味鉴评。\r\n我司参选的 高产型优质 品种泰两优1413荣获安徽省优质稻食味品质金奖！', 'cover1.jpg', '公司新闻', NULL, '小王', 'published', 0, 32, '2026-02-21 22:30:41', '2026-02-21 22:28:32', '2026-02-21 22:54:21');
+INSERT INTO `news` (`id`, `title`, `summary`, `content`, `cover_image`, `category`, `author`, `status`, `views`, `publish_date`, `created_at`, `updated_at`) VALUES
+(1, '公司荣获绿色示范企业', '公司在环保方面获得行业认可', '    优质稻品种食味品质鉴评活动的开展，旨在评选出适宜安徽省种植的优质食味水稻品种，进一步满足农业供给侧结构性改革对优质稻米品种的需求，推动我省水稻产业向优质化、品牌化方向发展。\r\n    我司参选的中籼品种泰两优1413，在此次评选中荣获金奖，充分展示了其米质的优质和口感的优越。同时在多年的大田推广中，泰两优1413以其强抗倒，分蘖能力强，有效穗多，结实率高保证了广大种植户的高产需求。\r\n    集高产与优质于一身的泰两优1413，以其超高的整精米率（平均整精米率达70%），深受各地米厂喜爱。和其他产品相比泰两优1413每百斤稻谷能多打出几斤大米，对于米厂来说商业价值和利润空间大大提升！', 'cover1.jpg', '公司新闻', '张经理', 'published', 25, '2026-02-01 09:00:00', '2026-02-21 22:01:42', '2026-02-24 18:32:49'),
+(2, '新品上市：智能农业监测系统', '简介与应用场景', '详细内容...', 'cover2.jpg', '产品新闻', '李工程师', 'published', 18, '2026-02-10 10:00:00', '2026-02-21 22:01:42', '2026-02-24 18:32:44'),
+(3, '热烈祝贺高产优质品种泰两优1413荣获2021年安徽省优质稻食味品质金奖', '公司成就', '1月16日下午，2021年（第三届）安徽省优质稻品种食味品质鉴评活动在合肥举行。安徽省种子管理总站、安徽省水稻产业技术体系、安徽省种子协会联合组织专家对征集的优质米品种进行现场食味鉴评。\r\n我司参选的 高产型优质 品种泰两优1413荣获安徽省优质稻食味品质金奖！', 'cover1.jpg', '公司新闻', '小王', 'published', 35, '2026-02-21 22:30:41', '2026-02-21 22:28:32', '2026-02-24 17:29:51');
 
 -- --------------------------------------------------------
 
@@ -231,7 +227,7 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT '产品名称',
   `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT '产品描述',
-  `image_url` varchar(500) COLLATE utf8_unicode_ci NOT NULL COMMENT '产品图片路径',
+  `image_name` varchar(500) COLLATE utf8_unicode_ci NOT NULL COMMENT '产品图片名称',
   `display_order` int(11) DEFAULT '0' COMMENT '显示顺序',
   `is_active` tinyint(1) DEFAULT '1' COMMENT '是否激活',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -242,7 +238,7 @@ CREATE TABLE `products` (
 -- 转存表中的数据 `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `image_url`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
+INSERT INTO `products` (`id`, `name`, `description`, `image_name`, `display_order`, `is_active`, `created_at`, `updated_at`) VALUES
 (1, '水稻1', '高产优质水稻品种，抗病性强，适合大面积种植', '1.png', 1, 1, '2025-08-24 08:44:12', '2026-02-21 13:46:38'),
 (2, '水稻2', '特色香米品种，米质优良，口感香甜', '2.png', 2, 1, '2025-08-24 08:44:12', '2025-08-24 08:44:12'),
 (3, '水稻3', '抗旱节水型水稻，适合干旱地区种植', '3.png', 3, 1, '2025-08-24 08:44:12', '2025-08-24 08:44:12'),

@@ -1,11 +1,6 @@
 import { Request, Response } from 'express';
 import pool from '../config/db';
 
-interface ProfileImg {
-  img_name: string;
-  order: number;
-}
-
 export const getProfileImage = async (req: Request, res: Response) => {
   try {
     const [rows] = await pool.query(`
@@ -17,6 +12,6 @@ export const getProfileImage = async (req: Request, res: Response) => {
     res.json((rows as any[]).map(row => row.img_name));
   } catch (error) {
     console.error('[ProfileImg Error]', error);
-    res.status(500).json({ error: 'Database query failed' });
+    res.status(500).json({ error: '公司图片查询失败' });
   }
 };

@@ -27,7 +27,7 @@
 
         <CultureValuesSection :culture="data.culture" />
 
-        <HonorGallerySection :honors="data.honors" />
+        <HonorGallerySection :honor="data.honor" />
       </template>
     </div>
   </div>

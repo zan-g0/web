@@ -2,8 +2,8 @@
   <section class="py-24 bg-gray-50" v-scroll-animate>
     <div class="max-w-7xl mx-auto px-4">
       <div class="text-center mb-20" v-scroll-animate>
-        <h2 class="honnor-title">荣誉资质</h2>
-        <div class="honnor-divider"></div>
+        <h2 class="honor-title">荣誉资质</h2>
+        <div class="honor-divider"></div>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
           我们获得的各项专业认证与荣誉
         </p>
@@ -12,18 +12,17 @@
 
       <div class="grid honor-grid gap-10">
         <div
-          v-for="honor in honors"
+          v-for="honor in honor"
           :key="honor.id"
           class="honor-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 border border-transparent hover:border-green-200"
           v-scroll-animate
         >
           <div class="relative overflow-hidden flex items-center justify-center min-h-[200px]">
             <img
-              :src="`http://localhost:3000/uploads/honnor/${honor.image}`"
+              :src="getUploadUrl('honor/' + honor.image)"
               :alt="honor.title"
               class="max-w-full max-h-full object-contain transition-transform duration-700 hover:scale-110"
               loading="lazy"
-              onerror="this.src='https://via.placeholder.com/400x320?text=证书图片加载失败'"
             >
           </div>
           <div class="p-8 relative">
@@ -38,7 +37,7 @@
         </div>
       </div>
 
-      <div v-if="honors.length === 0" class="text-center py-16" v-scroll-animate>
+      <div v-if="honor.length === 0" class="text-center py-16" v-scroll-animate>
         <div class="bg-white rounded-2xl p-12 shadow-lg inline-block">
           <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -52,16 +51,16 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-
+import { getUploadUrl } from '@/utils/urls';
 import { useCompanyData } from '@/composables/useCompanyData';
 
 const props = defineProps<{
-  honors: ReturnType<typeof useCompanyData>['data']['value']['honors'];
+  honor: ReturnType<typeof useCompanyData>['data']['value']['honor'];
 }>();
 </script>
 
 <style scoped>
-.honnor-title {
+.honor-title {
     color: #2c5e2e;
   font-weight: 700;
   font-size: 2.5rem;
@@ -72,7 +71,7 @@ const props = defineProps<{
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.honnor-divider {
+.honor-divider {
   height: 3px;
   background: linear-gradient(90deg, transparent, #2c5e2e, transparent);
   width: 80px;

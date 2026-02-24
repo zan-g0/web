@@ -1,5 +1,5 @@
 <template>
-  <section class="page-bg">
+  <section class="page-bg" v-scroll-animate>
     <div class="news-page">
           <h1 class="news-title">新闻中心</h1>
     <div class="news-divider"></div>
@@ -10,7 +10,7 @@
 
       <ul class="news-list">
         <li v-for="item in items" :key="item.id" class="news-item" @click="openDetail(item.id)">
-          <img v-if="item.cover_image" :src="`http://localhost:3000/uploads/news/${item.cover_image}`" alt="封面"
+          <img v-if="item.cover_image" :src="getUploadUrl('news/' + item.cover_image)" alt="封面"
             class="cover" />
           <div class="body">
             <h3 class="title">{{ item.title }}</h3>
@@ -35,8 +35,7 @@
             <button class="close-btn" @click.stop="closeDetail">×</button>
           </div>
           <div class="modal-body">
-            <img v-if="selected.cover_image" :src="`http://localhost:3000/uploads/news/${selected.cover_image}`"
-              class="cover" />
+            <img v-if="selected.cover_image" :src="getUploadUrl('news/' + selected.cover_image)" class="cover" />
             <div style="color:#666; font-size:14px; margin-bottom:12px">{{ formatDate(selected.publish_date) }} · {{
               selected.category || '公司新闻' }} · 作者：{{ selected.author || '-' }}</div>
             <div class="article" v-html="formatContent(selected.content || selected.summary)"></div>
@@ -52,12 +51,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-
+import { getUploadUrl } from '@/utils/urls';
 import type { NewsItem } from '@/types/news';
 
 const items = ref<NewsItem[]>([]);
 const page = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(5);
 const total = ref(0);
 const search = ref('');
 const loading = ref(false);

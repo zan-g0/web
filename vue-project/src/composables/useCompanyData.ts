@@ -1,5 +1,5 @@
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { axiosInstance } from '@/api/index'
 
 interface CompanyData {
   profile: { id: number; txt: string }[];
@@ -10,7 +10,7 @@ interface CompanyData {
     content: string[];
     icon_img: string;
   }[];
-  honors: {
+  honor: {
     id: number;
     title: string;
     description: string;
@@ -23,7 +23,7 @@ export function useCompanyData() {
     profile: [],
     images: [],
     culture: [],
-    honors: []
+    honor: []
   });
   const loading = ref(true);
   const error = ref<string | null>(null);
@@ -35,18 +35,18 @@ export function useCompanyData() {
       loading.value = true;
       error.value = null;
 
-      const [profileRes, imagesRes, cultureRes, honorsRes] = await Promise.all([
-        axios.get('/api/companyProfile'),
-        axios.get('/api/about-images'),
-        axios.get('/api/company-info/culture'),
-        axios.get('/api/company-info/honors')
+      const [profileRes, imagesRes, cultureRes, honorRes] = await Promise.all([
+        axiosInstance.get('/companyProfile'),
+        axiosInstance.get('/about-images'),
+        axiosInstance.get('/culture'),
+        axiosInstance.get('/honor')
       ]);
 
       data.value = {
         profile: profileRes.data,
         images: imagesRes.data,
         culture: cultureRes.data,
-        honors: honorsRes.data
+        honor: honorRes.data
       };
     } catch (err) {
       const errorMessage = err instanceof Error

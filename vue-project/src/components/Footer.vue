@@ -21,40 +21,70 @@ const applyFooterPosition = () => {
   const footerEl = footerRef.value;
   if (!footerEl) return;
 
-  // 页面实际内容高度
-  const bodyHeight = document.body.scrollHeight;
+  // 为避免自身对测量的影响（之前设置的 paddingBottom 会改变 scrollHeight），
+  // 临时移除我们可能设置的 paddingBottom 以获得真实内容高度。
+  const previousPadding = document.body.style.paddingBottom || '';
+  document.body.style.paddingBottom = '';
+
+  // 页面实际内容高度（不包含我们临时的 padding）
+  const bodyHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
   const viewportHeight = window.innerHeight;
 
-  // 当内容高度不足以填满屏幕时固定 footer
-  if (bodyHeight <= viewportHeight) {
-    isFixed.value = true;
-    const footerHeight = Math.ceil(footerEl.getBoundingClientRect().height);
-    // 防止固定后遮挡内容，给 body 底部留出相同高度
-    document.body.style.paddingBottom = `${footerHeight}px`;
+  const footerHeight = Math.ceil(footerEl.getBoundingClientRect().height || 0);
+
+  // 恢复之前的 padding（稍后会根据计算决定是否重新设置）
+  document.body.style.paddingBottom = previousPadding;
+
+  // 使用少量容差避免因像素级微小变化导致频繁切换
+  const TOLERANCE = 3;
+
+  if (bodyHeight <= viewportHeight + TOLERANCE) {
+    if (!isFixed.value) {
+      isFixed.value = true;
+      document.body.style.paddingBottom = `${footerHeight}px`;
+    }
   } else {
-    isFixed.value = false;
-    document.body.style.paddingBottom = '';
+    if (isFixed.value) {
+      isFixed.value = false;
+      document.body.style.paddingBottom = '';
+    }
   }
 };
 
 onMounted(() => {
-  applyFooterPosition();
-  window.addEventListener('resize', applyFooterPosition);
-  // 也在 DOM 变更后再次计算（例如 SPA 路由切换后）
-  // 使用简单的 MutationObserver 以应对内容异步加载场景
-  const mo = new MutationObserver(() => applyFooterPosition());
-  mo.observe(document.body, { childList: true, subtree: true });
-  // 保持引用以便卸载时断开
-  ;(window as any).__footerMutationObserver = mo;
-});
+  // 防抖，避免短时间内频繁计算导致抖动
+  let timer: number | null = null;
+  const debouncedApply = () => {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      applyFooterPosition();
+      timer = null;
+    }, 120);
+  };
 
-onUnmounted(() => {
-  window.removeEventListener('resize', applyFooterPosition);
-  const mo = (window as any).__footerMutationObserver;
-  if (mo) {
-    mo.disconnect();
-    (window as any).__footerMutationObserver = null;
-  }
+  // 初始计算
+  applyFooterPosition();
+
+  window.addEventListener('resize', debouncedApply);
+
+  // 也在 DOM 变更后再次计算（例如 SPA 路由切换后、异步内容加载或地图交互）
+  const mo = new MutationObserver(() => debouncedApply());
+  mo.observe(document.body, { childList: true, subtree: true });
+  (window as any).__footerMutationObserver = mo;
+
+  // 清理函数在卸载时执行
+  onUnmounted(() => {
+    window.removeEventListener('resize', debouncedApply);
+    if (timer) {
+      window.clearTimeout(timer);
+      timer = null;
+    }
+    const existing = (window as any).__footerMutationObserver;
+    if (existing) {
+      existing.disconnect();
+      (window as any).__footerMutationObserver = null;
+    }
+  });
 });
 </script>
 

@@ -1,8 +1,15 @@
 <template>
-  <section class="page-bg">
+  <section class="page-bg" v-scroll-animate>
   <div class="job-page">
     <h1 class="job-title">招聘岗位</h1>
     <div class="job-divider"></div>
+
+    <!-- 工具栏：搜索 -->
+    <div class="toolbar">
+      <input v-model="search" @keyup.enter="reload" placeholder="搜索岗位、类别或要求" />
+      <button @click="reload">搜索</button>
+    </div>
+
     <div v-if="loading" class="loading">加载中...</div>
 
     <div v-else>
@@ -19,6 +26,13 @@
           <div class="arrow">点击查看详情-></div>
         </li>
       </ul>
+
+      <!-- 分页控件 -->
+      <div class="pager">
+        <button :disabled="page <= 1" @click="changePage(page - 1)">上一页</button>
+        <span>第 {{ page }} 页 / 共 {{ totalPages }} 页</span>
+        <button :disabled="page >= totalPages" @click="changePage(page + 1)">下一页</button>
+      </div>
     </div>
 
     <!-- Job Detail Modal -->
@@ -60,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 interface JobPosition {
   id: number;
@@ -88,20 +102,44 @@ function formatDate(dateString: string | undefined): string {
   });
 }
 
+// 分页与搜索状态
+const page = ref(1);
+const pageSize = ref(5);
+const total = ref(0);
+const search = ref('');
+
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value)));
+
 async function fetchJobs() {
   loading.value = true;
   error.value = '';
   try {
-    const res = await fetch('/api/jobs/positions');
+    const params = new URLSearchParams({
+      page: String(page.value),
+      pageSize: String(pageSize.value)
+    });
+    if (search.value) params.append('search', search.value);
+
+    const res = await fetch(`/api/jobs/positions?${params.toString()}`);
     if (!res.ok) {
       const txt = await res.text();
       throw new Error(txt || `HTTP ${res.status}`);
     }
     const data = await res.json();
-    jobs.value = Array.isArray(data) ? data : [];
+    if (data && data.code === 0) {
+      jobs.value = data.data.items || [];
+      total.value = data.data.total || 0;
+    } else if (Array.isArray(data)) {
+      jobs.value = data;
+      total.value = data.length;
+    } else {
+      throw new Error('获取岗位数据失败');
+    }
   } catch (e: any) {
     console.error('[fetchJobs error]', e);
     error.value = e?.message || '数据请求失败';
+    jobs.value = [];
+    total.value = 0;
   } finally {
     loading.value = false;
   }
@@ -113,6 +151,16 @@ function openJobDetail(job: JobPosition) {
 
 function closeModal() {
   selectedJob.value = null;
+}
+
+function changePage(p: number) {
+  page.value = p;
+  fetchJobs();
+}
+
+function reload() {
+  page.value = 1;
+  fetchJobs();
 }
 
 onMounted(() => {
@@ -135,7 +183,23 @@ onMounted(() => {
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
+.toolbar {
+  display: flex;
+  gap: 8px;
+  margin:12px;
+}
 
+.toolbar input {
+  flex: 1;
+  padding: 8px;
+}
+.pager {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
 .loading,
 .empty,
 .error {

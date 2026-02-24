@@ -14,136 +14,49 @@ interface JobPosition {
 
 export const getJobPositions = async (req: Request, res: Response) => {
   try {
-    const [rows] = await pool.query<JobPosition[]>(`
-      SELECT id, category, title, requirements, salary_range, vacancy_count, display_order, is_active, created_at
-      FROM job_positions
-      WHERE is_active = 1
-      ORDER BY display_order ASC, created_at DESC
-    `);
+    const page = Math.max(1, parseInt((req.query.page as string) || '1', 10));
+    const pageSize = Math.min(100, Math.max(1, parseInt((req.query.pageSize as string) || '10', 10)));
+    const search = (req.query.search as string) || '';
 
-    res.json(rows);
+    const where: string[] = ['is_active = 1'];
+    const params: any[] = [];
+    if (search) {
+      where.push('(title LIKE ? OR requirements LIKE ? OR category LIKE ?)');
+      const like = `%${search}%`;
+      params.push(like, like, like);
+    }
+
+    const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+    const offset = (page - 1) * pageSize;
+
+    const countSql = `SELECT COUNT(*) as total FROM job_positions ${whereSql}`;
+    const [countRows]: any = await pool.query(countSql, params);
+    const total = (countRows && countRows[0] && countRows[0].total) ? Number(countRows[0].total) : 0;
+
+    const listSql = `SELECT id, category, title, requirements, salary_range, vacancy_count, display_order, created_at
+      FROM job_positions
+      ${whereSql}
+      ORDER BY display_order ASC, created_at DESC
+      LIMIT ? OFFSET ?`;
+    const listParams = params.concat([pageSize, offset]);
+    const [rows]: any = await pool.query(listSql, listParams);
+
+    const items: JobPosition[] = (rows || []).map((r: any) => ({
+      id: r.id,
+      category: r.category,
+      title: r.title,
+      requirements: r.requirements,
+      salary_range: r.salary_range,
+      vacancy_count: r.vacancy_count,
+      display_order: r.display_order,
+      created_at: r.created_at
+    }));
+
+    res.json({ code: 0, data: { items, total, page, pageSize } });
   } catch (error) {
     console.error('[招聘岗位查询错误]', error);
     res.status(500).json({
       error: 'Database query failed',
-      details: error instanceof Error ? error.message : String(error)
-    });
-  }
-};
-
-export const createJobPosition = async (req: Request, res: Response) => {
-  try {
-    const { category, title, requirements, salary_range, vacancy_count, display_order, is_active } = req.body;
-
-    // Validate required fields
-    if (!category || !title || !requirements || !salary_range) {
-      return res.status(400).json({
-        error: 'Missing required fields: category, title, requirements, salary_range'
-      });
-    }
-
-    const result = await pool.query(
-      'INSERT INTO job_positions (category, title, requirements, salary_range, vacancy_count, display_order, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())',
-      [category, title, requirements, salary_range, vacancy_count, display_order, is_active || 1]
-    );
-
-    const newId = result[0].insertId;
-
-    // Return the created record
-    const [createdRow] = await pool.query<JobPosition[]>(
-      'SELECT id, category, title, requirements, salary_range, vacancy_count, display_order, is_active, created_at FROM job_positions WHERE id = ?',
-      [newId]
-    );
-
-    res.status(201).json(createdRow[0]);
-  } catch (error) {
-    console.error('[创建招聘岗位错误]', error);
-    res.status(500).json({
-      error: 'Failed to create job position',
-      details: error instanceof Error ? error.message : String(error)
-    });
-  }
-};
-
-export const updateJobPosition = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { category, title, requirements, salary_range, vacancy_count, display_order, is_active } = req.body;
-
-    // Validate required fields
-    if (!id) {
-      return res.status(400).json({
-        error: 'Job position ID is required'
-      });
-    }
-
-    // Validate that the job position exists
-    const [existing] = await pool.query<JobPosition[]>(
-      'SELECT id FROM job_positions WHERE id = ?',
-      [id]
-    );
-
-    if (existing.length === 0) {
-      return res.status(404).json({
-        error: 'Job position not found'
-      });
-    }
-
-    // Update the job position
-    const result = await pool.query(
-      'UPDATE job_positions SET category = ?, title = ?, requirements = ?, salary_range = ?, vacancy_count = ?, display_order = ?, is_active = ? WHERE id = ?',
-      [category, title, requirements, salary_range, vacancy_count, display_order, is_active, id]
-    );
-
-    if (result[0].affectedRows === 0) {
-      return res.status(404).json({
-        error: 'Job position not found'
-      });
-    }
-
-    // Return the updated record
-    const [updatedRow] = await pool.query<JobPosition[]>(
-      'SELECT id, category, title, requirements, salary_range, vacancy_count, display_order, is_active, created_at FROM job_positions WHERE id = ?',
-      [id]
-    );
-
-    res.json(updatedRow[0]);
-  } catch (error) {
-    console.error('[更新招聘岗位错误]', error);
-    res.status(500).json({
-      error: 'Failed to update job position',
-      details: error instanceof Error ? error.message : String(error)
-    });
-  }
-};
-
-export const deleteJobPosition = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        error: 'Job position ID is required'
-      });
-    }
-
-    // Soft delete by setting is_active to 0
-    const result = await pool.query(
-      'UPDATE job_positions SET is_active = 0 WHERE id = ?',
-      [id]
-    );
-
-    if (result[0].affectedRows === 0) {
-      return res.status(404).json({
-        error: 'Job position not found'
-      });
-    }
-
-    res.status(204).send();
-  } catch (error) {
-    console.error('[删除招聘岗位错误]', error);
-    res.status(500).json({
-      error: 'Failed to delete job position',
       details: error instanceof Error ? error.message : String(error)
     });
   }

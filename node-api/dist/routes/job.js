@@ -3,12 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// routes/job.ts
 const express_1 = __importDefault(require("express"));
 const job_1 = require("../controllers/job");
 const router = express_1.default.Router();
-router.get('/positions', job_1.getJobPositions);
-router.post('/positions', job_1.createJobPosition);
-router.put('/positions/:id', job_1.updateJobPosition);
-router.delete('/positions/:id', job_1.deleteJobPosition);
+router.get("/positions", job_1.getJobPositions);
 exports.default = router;

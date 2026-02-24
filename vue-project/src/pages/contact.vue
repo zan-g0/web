@@ -1,5 +1,5 @@
 <template>
-  <section class="p-5">
+  <section class="p-5" v-scroll-animate>
     <div class="container">
       <!-- 加载状态 -->
       <div v-if="loading" class="text-center">
@@ -48,15 +48,6 @@
                   </div>
                 </div>
                 
-                <div class="contact-item" v-if="contactInfo.fax">
-                  <div class="contact-icon">
-                    <Printer />
-                  </div>
-                  <div class="contact-content">
-                    <span class="contact-label">传真</span>
-                    <span class="contact-value">{{ contactInfo.fax }}</span>
-                  </div>
-                </div>
                 
                 <div class="contact-item" v-if="contactInfo.email">
                   <div class="contact-icon">
@@ -110,12 +101,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { Phone, Headset, Printer, Message, House, Location } from '@element-plus/icons-vue';
-
+ import { axiosInstance } from '@/api/index';
 interface ContactInfo {
   id: number;
   company_phone: string;
   service_phone: string;
-  fax: string;
   email: string;
   postal_code: string;
   address: string;
@@ -131,19 +121,19 @@ const fetchContactInfo = async () => {
   try {
     loading.value = true;
     error.value = '';
-    
-    const response = await fetch('/api/contact/admin?page=1&size=1');
-    
-    if (!response.ok) {
-      throw new Error(`获取联系信息失败: ${response.status} ${response.statusText}`);
+
+    const res = await axiosInstance.get('/contact');
+
+    if (res.status < 200 || res.status >= 300) {
+      throw new Error(`获取联系信息失败: ${res.status} ${res.statusText}`);
     }
-    
-    const data = await response.json();
-    contactInfo.value = data.data?.[0] || {};
-    
+
+    const data = res.data;
+    contactInfo.value = data?.data?.[0] || {};
+
     // 初始化地图
     initMap();
-    
+
   } catch (err) {
     console.error('获取联系信息失败:', err);
     error.value = err instanceof Error ? err.message : '未知错误';

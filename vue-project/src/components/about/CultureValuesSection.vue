@@ -20,7 +20,7 @@
           <div class="flex flex-col items-center text-center">
             <div class="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-green-100 shadow-lg">
               <img
-                :src="`/src/assets/images/about/${item.icon_img}`"
+                :src="getUploadUrl('culture/' + item.icon_img)"
                 :alt="item.title"
                 class="w-full h-full object-contain p-2"
               >
@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-
+import { getUploadUrl } from '@/utils/urls';
 import { useCompanyData } from '@/composables/useCompanyData';
 
 const props = defineProps<{

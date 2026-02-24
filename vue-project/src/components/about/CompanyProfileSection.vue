@@ -24,7 +24,7 @@
           <div class="w-full h-full rounded-2xl overflow-hidden shadow-lg bg-white flex items-center justify-center p-0 image-wrapper">
             <img
               v-if="images && images.length"
-              :src="`http://localhost:3000/uploads/company/${images[0]}`"
+              :src="getUploadUrl('company/' + images[0])"
               alt="公司形象图主图"
               class="w-full h-full object-cover transition-transform duration-500"
               loading="lazy"
@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-
+import { getUploadUrl } from '@/utils/urls';
 import { useCompanyData } from '@/composables/useCompanyData';
 
 const props = defineProps<{
