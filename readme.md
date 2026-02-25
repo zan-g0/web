@@ -55,12 +55,15 @@ pm2 start app.js -i max --name "my-api"
 cd ./vue-project/dist
 npx -s . -p 8080
 ```
+
 注：-p 参数后的端口可自定义，若修改端口，需在 node-api/app.js 中对应添加允许的端口。
 
 使用Nginx（最推荐，生产环境标准）
 
 ### 3.2 Windows 上部署前端页面（Nginx）
+
 #### 3.2.1 下载和安装 Nginx for Windows
+
 下载 Nginx
 
 访问 http://nginx.org/en/download.html
@@ -98,7 +101,9 @@ C:\www\my-website\assets\
 C:\www\my-website\css\
 C:\www\my-website\js\
 ```
+
 #### 3.2.3 配置 Nginx
+
 编辑 C:\nginx\conf\nginx.conf：
 
 ```nginx
@@ -186,8 +191,11 @@ http {
     # }
 }
 ```
+
 #### 3.2.4 启动和管理 Nginx
+
 方法1：命令行管理
+
 ```bash
 # 进入 Nginx 目录
 cd C:\nginx
@@ -210,4 +218,141 @@ nginx -s quit    # 优雅停止（完成当前请求）
 
 # 重启 Nginx
 nginx -s reopen
+```
+
+方法2：创建批处理文件
+创建 manage-nginx.bat：
+
+```batch
+@echo off
+cd /d C:\nginx
+
+:menu
+echo ================================
+echo    Nginx 管理工具
+echo ================================
+echo 1. 启动 Nginx
+echo 2. 停止 Nginx
+echo 3. 重启 Nginx
+echo 4. 重新加载配置
+echo 5. 检查配置
+echo 6. 退出
+echo ================================
+set /p choice=请选择 (1-6): 
+
+if "%choice%"=="1" goto start
+if "%choice%"=="2" goto stop
+if "%choice%"=="3" goto restart
+if "%choice%"=="4" goto reload
+if "%choice%"=="5" goto test
+if "%choice%"=="6" goto end
+
+:start
+echo 启动 Nginx...
+start nginx
+echo Nginx 已启动
+pause
+goto menu
+
+:stop
+echo 停止 Nginx...
+nginx -s stop
+echo Nginx 已停止
+pause
+goto menu
+
+:restart
+echo 重启 Nginx...
+nginx -s reload
+echo Nginx 已重启
+pause
+goto menu
+
+:reload
+echo 重新加载配置...
+nginx -s reload
+echo 配置已重新加载
+pause
+goto menu
+
+:test
+echo 检查配置...
+nginx -t
+pause
+goto menu
+
+:end
+exit
+```
+
+#### 方法3：安装为 Windows 服务（推荐）
+
+使用 winsw 将 Nginx 安装为服务：
+
+下载 WinSW.NET461.exe
+
+创建 nginx-service.xml：
+
+```xml
+<service>
+  <id>nginx</id>
+  <name>nginx</name>
+  <description>nginx web server</description>
+  <executable>C:\nginx\nginx.exe</executable>
+  <logpath>C:\nginx\logs</logpath>
+  <logmode>roll</logmode>
+  <depend></depend>
+  <startargument>-p</startargument>
+  <startargument>C:\nginx</startargument>
+</service>
+```
+
+安装服务：
+
+```bash
+nginx-service.exe install
+```
+
+#### 3.2.5 防火墙设置
+
+```powershell
+# 以管理员身份运行 PowerShell
+
+# 添加防火墙规则（开放 8080 端口）
+New-NetFirewallRule -DisplayName "Nginx Web Server" -Direction Inbound -LocalPort 8080 -Protocol TCP -Action Allow
+
+# 查看规则
+Get-NetFirewallRule -DisplayName "Nginx Web Server"
+```
+
+#### 3.2.6 访问网站
+
+本机访问: http://localhost:8080
+
+局域网访问: http://你的IP:8080
+
+带路径访问: http://localhost:8080/about（SPA 路由会正常工作）
+
+#### 3.2.7 常见问题解决
+
+端口被占用
+
+```bash
+# 查看 8080 端口占用
+netstat -ano | findstr :8080
+
+# 杀死占用进程
+taskkill /PID 1234 /F
+中文乱码问题
+nginx
+# 在 server 块中添加
+charset utf-8;
+403 Forbidden
+nginx
+# 确保路径正确，使用正斜杠
+root C:/www/my-website;
+文件权限
+batch
+# 确保 Nginx 对网站目录有读取权限
+icacls C:\www\my-website /grant "Everyone:R" /T
 ```
