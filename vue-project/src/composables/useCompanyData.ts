@@ -36,8 +36,8 @@ export function useCompanyData() {
       error.value = null;
 
       const [profileRes, imagesRes, cultureRes, honorRes] = await Promise.all([
-        axiosInstance.get('/companyProfile'),
-        axiosInstance.get('/about-images'),
+        axiosInstance.get('/profile'),
+        axiosInstance.get('/profileimage'),
         axiosInstance.get('/culture'),
         axiosInstance.get('/honor')
       ]);

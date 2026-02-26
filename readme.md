@@ -1,3 +1,11 @@
+# 项目介绍
+
+node-api为后端
+
+pure-admin-thin为后台管理
+
+vue-project为前端展示
+
 # 📦 项目运行说明(生产环境)
 
 ## 1. 数据库配置
