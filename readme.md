@@ -8,7 +8,15 @@ vue-project为前端展示
 
 # 📦 项目运行说明(生产环境)
 
-## 1. 数据库配置
+## 1. 基本配置
+
+开发环境使用NPM脚本install安装依赖
+
+dev启动开发服务器
+
+build打包
+
+start或preview打包后预览
 
 将 web.sql 文件导入到 MySQL 数据库中
 

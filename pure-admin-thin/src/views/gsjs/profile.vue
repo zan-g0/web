@@ -8,45 +8,90 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width: 100%" @sort-change="handleSortChange">
+      <el-table
+        :data="tableData"
+        stripe
+        border
+        style="width: 100%"
+        @sort-change="handleSortChange"
+      >
         <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column prop="id" label="ID" width="120" align="center" sortable>
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="120"
+          align="center"
+          sortable
+        >
           <template #default="{ row }">{{ row.id }}</template>
         </el-table-column>
 
         <el-table-column prop="txt" label="介绍内容" min-width="400">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-input type="textarea" v-model="editableRow.txt" rows="3" />
+              <el-input v-model="editableRow.txt" type="textarea" rows="3" />
             </div>
-            <div v-else style="white-space:pre-wrap; word-break:break-word;">{{ row.txt }}</div>
+            <div v-else style=" word-break: break-word;white-space: pre-wrap">
+              {{ row.txt }}
+            </div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="order" label="排序" width="120" align="center" sortable>
+        <el-table-column
+          prop="order"
+          label="排序"
+          width="120"
+          align="center"
+          sortable
+        >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-input-number v-model="editableRow.order" :min="0" style="width:100px" />
+              <el-input-number
+                v-model="editableRow.order"
+                :min="0"
+                style="width: 100px"
+              />
             </div>
             <div v-else>{{ row.order }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="is_active" label="启用" width="100" align="center">
+        <el-table-column
+          prop="is_active"
+          label="启用"
+          width="100"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-switch :model-value="row.active" @change="(val) => onSwitchChange(row, val)" />
+            <el-switch
+              :model-value="row.active"
+              @change="val => onSwitchChange(row, val)"
+            />
           </template>
         </el-table-column>
 
         <el-table-column label="操作" width="260" align="center" fixed="right">
           <template #default="{ row }">
             <template v-if="editingRowId === row.id">
-              <el-button size="small" type="primary" :loading="submitLoading" @click="() => saveEdit(row)">保存</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                :loading="submitLoading"
+                @click="() => saveEdit(row)"
+                >保存</el-button
+              >
               <el-button size="small" @click="cancelEdit">取消</el-button>
             </template>
             <template v-else>
-              <el-button size="small" @click="() => startEdit(row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="() => handleDelete(row)">删除</el-button>
+              <el-button size="small" @click="() => startEdit(row)"
+                >编辑</el-button
+              >
+              <el-button
+                size="small"
+                type="danger"
+                @click="() => handleDelete(row)"
+                >删除</el-button
+              >
             </template>
           </template>
         </el-table-column>
@@ -58,7 +103,7 @@
           layout="prev, pager, next, sizes, total"
           :current-page="currentPage"
           :page-size="pageSize"
-          :page-sizes="[5,10,20,50]"
+          :page-sizes="[5, 10, 20, 50]"
           :total="total"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"
@@ -66,10 +111,10 @@
       </div>
     </el-card>
 
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px">
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="内容" prop="txt">
-          <el-input type="textarea" v-model="form.txt" rows="6" />
+          <el-input v-model="form.txt" type="textarea" rows="6" />
         </el-form-item>
 
         <el-form-item label="排序" prop="order">
@@ -77,13 +122,18 @@
         </el-form-item>
 
         <el-form-item label="启用" prop="is_active">
-          <el-switch :model-value="form.is_active === 1" @change="(val) => (form.is_active = val ? 1 : 0)" />
+          <el-switch
+            :model-value="form.is_active === 1"
+            @change="val => (form.is_active = val ? 1 : 0)"
+          />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="handleSubmit"
+          >保存</el-button
+        >
       </template>
     </el-dialog>
   </div>
@@ -121,12 +171,12 @@ const form = reactive({
   id: 0,
   txt: "",
   order: 0,
-  is_active: 1,
+  is_active: 1
 });
 
 const rules: FormRules = {
   txt: [{ required: true, message: "内容不能为空", trigger: "blur" }],
-  order: [{ required: true, message: "排序不能为空", trigger: "change" }],
+  order: [{ required: true, message: "排序不能为空", trigger: "change" }]
 };
 
 const dialogTitle = computed(() => (form.id ? "编辑公司简介" : "新增公司简介"));
@@ -135,7 +185,7 @@ const initialized = ref(false);
 const editingRowId = ref<number | null>(null);
 const editableRow = reactive({
   txt: "",
-  order: 0,
+  order: 0
 });
 
 const fetchList = async () => {
@@ -146,7 +196,7 @@ const fetchList = async () => {
     tableData.value = res.data.map((r: any) => ({
       ...r,
       is_active: Number(r.is_active) === 1 ? 1 : 0,
-      active: Number(r.is_active) === 1,
+      active: Number(r.is_active) === 1
     }));
     total.value = res.total;
     initialized.value = true;
@@ -164,7 +214,9 @@ onMounted(() => {
 const handleAdd = () => {
   form.id = 0;
   form.txt = "";
-  const maxOrder = tableData.value.length ? Math.max(...tableData.value.map((r: any) => Number(r.order) || 0)) : 0;
+  const maxOrder = tableData.value.length
+    ? Math.max(...tableData.value.map((r: any) => Number(r.order) || 0))
+    : 0;
   form.order = maxOrder + 1;
   form.is_active = 1;
   dialogVisible.value = true;
@@ -193,7 +245,11 @@ const saveEdit = async (originalRow: Profile) => {
     ElMessage.error("内容不能为空");
     return;
   }
-  if (editableRow.order === null || editableRow.order === undefined || isNaN(Number(editableRow.order))) {
+  if (
+    editableRow.order === null ||
+    editableRow.order === undefined ||
+    isNaN(Number(editableRow.order))
+  ) {
     ElMessage.error("排序不能为空且为数字");
     return;
   }
@@ -202,7 +258,7 @@ const saveEdit = async (originalRow: Profile) => {
   try {
     await updateprofile(originalRow.id, {
       txt: editableRow.txt,
-      order: Number(editableRow.order),
+      order: Number(editableRow.order)
     });
     originalRow.txt = editableRow.txt;
     originalRow.order = Number(editableRow.order);
@@ -238,14 +294,14 @@ const handleSubmit = async () => {
       await updateprofile(form.id, {
         txt: form.txt,
         order: form.order,
-        is_active: form.is_active,
+        is_active: form.is_active
       });
       ElMessage.success("更新成功");
     } else {
       await createprofile({
         txt: form.txt,
         order: form.order,
-        is_active: form.is_active,
+        is_active: form.is_active
       });
       ElMessage.success("新增成功");
     }
@@ -303,6 +359,7 @@ const onSwitchChange = async (row: any, val: boolean) => {
   font-size: 1.15rem;
   font-weight: 600;
 }
+
 .profile-management .el-table td {
   font-size: 1.05rem;
 }

@@ -4,11 +4,18 @@ export const getprofile = (params: { page: number; size: number }) => {
   return request.get("admin/profile", { params });
 };
 
-export const createprofile = (data: { txt: string; order?: number; is_active?: number }) => {
+export const createprofile = (data: {
+  txt: string;
+  order?: number;
+  is_active?: number;
+}) => {
   return request.post("admin/profile/", data);
 };
 
-export const updateprofile = (id: number, data: { txt?: string; order?: number; is_active?: number }) => {
+export const updateprofile = (
+  id: number,
+  data: { txt?: string; order?: number; is_active?: number }
+) => {
   return request.put(`admin/profile/${id}`, data);
 };
 

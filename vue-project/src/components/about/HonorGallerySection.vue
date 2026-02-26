@@ -12,15 +12,15 @@
 
       <div class="grid honor-grid gap-10">
         <div
-          v-for="honor in honor"
-          :key="honor.id"
+          v-for="item in honor"
+          :key="item.id"
           class="honor-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 border border-transparent hover:border-green-200"
           v-scroll-animate
         >
           <div class="relative overflow-hidden flex items-center justify-center min-h-[200px]">
             <img
-              :src="getUploadUrl('honor/' + honor.image)"
-              :alt="honor.title"
+              :src="getUploadUrl('honor/' + item.image)"
+              :alt="item.title"
               class="max-w-full max-h-full object-contain transition-transform duration-700 hover:scale-110"
               loading="lazy"
             >
@@ -28,11 +28,10 @@
           <div class="p-8 relative">
             <div class="mb-6">
               <h3 class="text-2xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-green-50 to-white px-4 py-2 rounded-lg inline-block">
-                {{ honor.title }}
+                {{ item.title }}
               </h3>
             </div>
-            <p>{{ honor.description }}</p>
-
+            <p>{{ item.description }}</p>
           </div>
         </div>
       </div>
@@ -50,18 +49,23 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { getUploadUrl } from '@/utils/urls';
-import { useCompanyData } from '@/composables/useCompanyData';
 
-const props = defineProps<{
-  honor: ReturnType<typeof useCompanyData>['data']['value']['honor'];
+interface HonorItem {
+  id: number | string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+defineProps<{
+  honor: HonorItem[];
 }>();
 </script>
 
 <style scoped>
 .honor-title {
-    color: #2c5e2e;
+  color: #2c5e2e;
   font-weight: 700;
   font-size: 2.5rem;
   margin: 0 0 1rem;

@@ -1,7 +1,12 @@
 import request from "./request";
 
 // 获取新闻列表（分页）
-export const getNewsList = (params: { page: number; size: number; category?: string; status?: string }) => {
+export const getNewsList = (params: {
+  page: number;
+  size: number;
+  category?: string;
+  status?: string;
+}) => {
   return request.get("/admin/news", { params });
 };
 
@@ -18,7 +23,7 @@ export const createNews = (data: {
   cover_image?: string;
   category?: string;
   author?: string;
-  status?: 'draft' | 'published';
+  status?: "draft" | "published";
   publish_date?: string;
 }) => {
   return request.post("/admin/news", data);
@@ -34,7 +39,7 @@ export const updateNews = (
     cover_image?: string;
     category?: string;
     author?: string;
-    status?: 'draft' | 'published';
+    status?: "draft" | "published";
     publish_date?: string;
   }
 ) => {
@@ -52,16 +57,22 @@ export const batchDeleteNews = (ids: number[]) => {
 };
 
 // 更新新闻状态
-export const updateNewsStatus = (id: number, status: 'draft' | 'published') => {
+export const updateNewsStatus = (id: number, status: "draft" | "published") => {
   return request.put(`/admin/news/${id}/status`, { status });
 };
 
 // 按分类获取新闻
-export const getNewsByCategory = (category: string, params: { page: number; size: number }) => {
+export const getNewsByCategory = (
+  category: string,
+  params: { page: number; size: number }
+) => {
   return request.get(`/admin/news/category/${category}`, { params });
 };
 
 // 搜索新闻
-export const searchNews = (keyword: string, params: { page: number; size: number }) => {
+export const searchNews = (
+  keyword: string,
+  params: { page: number; size: number }
+) => {
   return request.get("/admin/news/search", { params: { keyword, ...params } });
 };

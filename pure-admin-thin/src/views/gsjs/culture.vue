@@ -8,9 +8,21 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width: 100%" @sort-change="handleSortChange">
+      <el-table
+        :data="tableData"
+        stripe
+        border
+        style="width: 100%"
+        @sort-change="handleSortChange"
+      >
         <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column prop="id" label="ID" width="100" align="center" sortable>
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="100"
+          align="center"
+          sortable
+        >
           <template #default="{ row }">{{ row.id }}</template>
         </el-table-column>
 
@@ -23,14 +35,34 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="icon_img" label="图标" width="120" align="center">
+        <el-table-column
+          prop="icon_img"
+          label="图标"
+          width="120"
+          align="center"
+        >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-button size="small" type="primary" @click="openIconDialog(row)">选择图标</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                @click="openIconDialog(row)"
+                >选择图标</el-button
+              >
             </div>
             <div v-else>
-              <img v-if="row.icon_img" :src="getImageUrl(row.icon_img)" alt="icon"
-                style="width:40px; height:40px; object-fit:cover; border-radius:4px;" @error="onImageError" />
+              <img
+                v-if="row.icon_img"
+                :src="getImageUrl(row.icon_img)"
+                alt="icon"
+                style="
+                  width: 40px;
+                  height: 40px;
+                  object-fit: cover;
+                  border-radius: 4px;
+                "
+                @error="onImageError"
+              />
               <span v-else class="text-gray-400">无图标</span>
             </div>
           </template>
@@ -39,66 +71,128 @@
         <el-table-column prop="content" label="内容" min-width="300">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <div v-for="(item, index) in editableRow.content" :key="index" class="flex items-center mb-2">
-                <el-input v-model="editableRow.content[index]" type="textarea" :rows="2" class="flex-1" />
-                <el-button type="danger" :icon="Delete" circle size="small" class="ml-2"
-                  @click="removeContentItem(index)" />
+              <div
+                v-for="(item, index) in editableRow.content"
+                :key="index"
+                class="flex items-center mb-2"
+              >
+                <el-input
+                  v-model="editableRow.content[index]"
+                  type="textarea"
+                  :rows="2"
+                  class="flex-1"
+                />
+                <el-button
+                  type="danger"
+                  :icon="Delete"
+                  circle
+                  size="small"
+                  class="ml-2"
+                  @click="removeContentItem(index)"
+                />
               </div>
               <el-button type="primary" link @click="addContentItem">
                 <el-icon>
                   <Plus />
-                </el-icon> 添加内容项
+                </el-icon>
+                添加内容项
               </el-button>
             </div>
             <div v-else>
-              <div v-for="(item, index) in row.content" :key="index" class="mb-1">
+              <div
+                v-for="(item, index) in row.content"
+                :key="index"
+                class="mb-1"
+              >
                 • {{ item }}
               </div>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="order" label="排序" width="100" align="center" sortable>
+        <el-table-column
+          prop="order"
+          label="排序"
+          width="100"
+          align="center"
+          sortable
+        >
           <template #default="{ row }">
-            <div v-if="editingRowId === row.id" style="display: flex; justify-content: center;">
-              <el-input-number v-model="editableRow.order" :min="0" :max="999" controls-position="right" size="small"
-                style="width: 90px;" />
+            <div
+              v-if="editingRowId === row.id"
+              style="display: flex; justify-content: center"
+            >
+              <el-input-number
+                v-model="editableRow.order"
+                :min="0"
+                :max="999"
+                controls-position="right"
+                size="small"
+                style="width: 90px"
+              />
             </div>
             <div v-else>{{ row.order }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="is_active" label="启用" width="100" align="center">
+        <el-table-column
+          prop="is_active"
+          label="启用"
+          width="100"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-switch :model-value="row.active" @change="(val) => onSwitchChange(row, val)" />
+            <el-switch
+              :model-value="row.active"
+              @change="val => onSwitchChange(row, val)"
+            />
           </template>
         </el-table-column>
 
         <el-table-column label="操作" width="280" align="center" fixed="right">
           <template #default="{ row }">
             <template v-if="editingRowId === row.id">
-              <el-button size="small" type="primary" :loading="submitLoading"
-                @click="() => saveEdit(row)">保存</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                :loading="submitLoading"
+                @click="() => saveEdit(row)"
+                >保存</el-button
+              >
               <el-button size="small" @click="cancelEdit">取消</el-button>
             </template>
             <template v-else>
-              <el-button size="small" @click="() => startEdit(row)">编辑</el-button>
-              <el-button size="small" type="danger" @click="() => handleDelete(row)">删除</el-button>
+              <el-button size="small" @click="() => startEdit(row)"
+                >编辑</el-button
+              >
+              <el-button
+                size="small"
+                type="danger"
+                @click="() => handleDelete(row)"
+                >删除</el-button
+              >
             </template>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="flex justify-end mt-4">
-        <el-pagination background layout="prev, pager, next, sizes, total" :current-page="currentPage"
-          :page-size="pageSize" :page-sizes="[5, 10, 20, 50]" :total="total" @current-change="handleCurrentChange"
-          @size-change="handleSizeChange" />
+        <el-pagination
+          background
+          layout="prev, pager, next, sizes, total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
       </div>
     </el-card>
 
     <!-- 新增/编辑对话框 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="700px">
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="700px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入标题" />
         </el-form-item>
@@ -106,27 +200,55 @@
         <el-form-item label="图标" prop="icon_img">
           <div class="flex items-center">
             <el-button type="primary" @click="openIconDialog()">
-              {{ form.icon_img ? '更换图标' : '选择图标' }}
+              {{ form.icon_img ? "更换图标" : "选择图标" }}
             </el-button>
-            <div class="ml-4" v-if="form.icon_img">
-              <img :src="getImageUrl(form.icon_img)" alt="icon"
-                style="width:60px; height:60px; object-fit:cover; border-radius:4px; border:1px solid #eee;" />
-              <el-button type="danger" link @click="form.icon_img = ''">清除</el-button>
+            <div v-if="form.icon_img" class="ml-4">
+              <img
+                :src="getImageUrl(form.icon_img)"
+                alt="icon"
+                style="
+                  width: 60px;
+                  height: 60px;
+                  object-fit: cover;
+                  border: 1px solid #eee;
+                  border-radius: 4px;
+                "
+              />
+              <el-button type="danger" link @click="form.icon_img = ''"
+                >清除</el-button
+              >
             </div>
           </div>
         </el-form-item>
 
         <el-form-item label="内容" prop="content">
           <div class="w-full">
-            <div v-for="(item, index) in form.content" :key="index" class="flex items-center mb-2">
-              <el-input v-model="form.content[index]" type="textarea" :rows="3" placeholder="请输入内容" class="flex-1" />
-              <el-button type="danger" :icon="Delete" circle size="small" class="ml-2"
-                @click="removeFormContentItem(index)" />
+            <div
+              v-for="(item, index) in form.content"
+              :key="index"
+              class="flex items-center mb-2"
+            >
+              <el-input
+                v-model="form.content[index]"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入内容"
+                class="flex-1"
+              />
+              <el-button
+                type="danger"
+                :icon="Delete"
+                circle
+                size="small"
+                class="ml-2"
+                @click="removeFormContentItem(index)"
+              />
             </div>
             <el-button type="primary" link @click="addFormContentItem">
               <el-icon>
                 <Plus />
-              </el-icon> 添加内容项
+              </el-icon>
+              添加内容项
             </el-button>
           </div>
         </el-form-item>
@@ -136,49 +258,77 @@
         </el-form-item>
 
         <el-form-item label="启用" prop="is_active">
-          <el-switch :model-value="form.is_active === 1" @change="(val) => (form.is_active = val ? 1 : 0)" />
+          <el-switch
+            :model-value="form.is_active === 1"
+            @change="val => (form.is_active = val ? 1 : 0)"
+          />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="handleSubmit"
+          >保存</el-button
+        >
       </template>
     </el-dialog>
 
     <!-- 图标选择对话框 -->
-    <el-dialog title="选择图标" v-model="iconDialogVisible" width="800px">
+    <el-dialog v-model="iconDialogVisible" title="选择图标" width="800px">
       <div class="icon-upload-section mb-4">
         <div class="flex items-center">
-          <input type="file" ref="iconFileInput" @change="onIconFileChange" accept="image/*" class="hidden" />
+          <input
+            ref="iconFileInput"
+            type="file"
+            accept="image/*"
+            class="hidden"
+            @change="onIconFileChange"
+          />
           <el-button type="primary" @click="triggerIconUpload">
             <el-icon>
               <Upload />
-            </el-icon> 上传新图标
+            </el-icon>
+            上传新图标
           </el-button>
-          <span class="ml-3 text-gray-500" v-if="uploadingIcon">上传中...</span>
+          <span v-if="uploadingIcon" class="ml-3 text-gray-500">上传中...</span>
         </div>
         <div v-if="iconPreviewUrl" class="mt-2">
-          <img :src="iconPreviewUrl" style="max-width:100px; max-height:100px; object-fit:cover;" />
+          <img
+            :src="iconPreviewUrl"
+            style="max-width: 100px; max-height: 100px; object-fit: cover"
+          />
         </div>
       </div>
 
       <el-divider>已上传图标</el-divider>
 
-      <div class="icon-grid" v-loading="iconListLoading">
-        <div v-for="icon in iconList" :key="icon.name" class="icon-item"
-          :class="{ 'selected': selectedIcon === icon.name }" @click="selectIcon(icon.name)">
+      <div v-loading="iconListLoading" class="icon-grid">
+        <div
+          v-for="icon in iconList"
+          :key="icon.name"
+          class="icon-item"
+          :class="{ selected: selectedIcon === icon.name }"
+          @click="selectIcon(icon.name)"
+        >
           <img :src="getImageUrl(icon.name, 'culture')" :alt="icon.name" />
           <div class="icon-name">{{ icon.name }}</div>
         </div>
-        <div v-if="iconList.length === 0" class="text-center text-gray-400 py-8">
+        <div
+          v-if="iconList.length === 0"
+          class="text-center text-gray-400 py-8"
+        >
           暂无图标，请先上传
         </div>
       </div>
 
       <template #footer>
         <el-button @click="iconDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmIconSelect" :disabled="!selectedIcon">确定</el-button>
+        <el-button
+          type="primary"
+          :disabled="!selectedIcon"
+          @click="confirmIconSelect"
+          >确定</el-button
+        >
       </template>
     </el-dialog>
   </div>
@@ -226,14 +376,14 @@ const form = reactive({
   content: [""],
   icon_img: "",
   order: 0,
-  is_active: 1,
+  is_active: 1
 });
 
 const rules: FormRules = {
   title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
   content: [{ required: true, message: "内容不能为空", trigger: "blur" }],
   icon_img: [{ required: true, message: "请选择图标", trigger: "change" }],
-  order: [{ required: true, message: "排序不能为空", trigger: "change" }],
+  order: [{ required: true, message: "排序不能为空", trigger: "change" }]
 };
 
 const dialogTitle = computed(() => (form.id ? "编辑文化条目" : "新增文化条目"));
@@ -244,7 +394,7 @@ const editableRow = reactive({
   title: "",
   content: [""],
   icon_img: "",
-  order: 0,
+  order: 0
 });
 
 const fetchList = async () => {
@@ -255,7 +405,7 @@ const fetchList = async () => {
     tableData.value = res.data.map((r: any) => ({
       ...r,
       is_active: Number(r.is_active) === 1 ? 1 : 0,
-      active: Number(r.is_active) === 1,
+      active: Number(r.is_active) === 1
     }));
     total.value = res.total;
     initialized.value = true;
@@ -266,12 +416,11 @@ const fetchList = async () => {
   }
 };
 
-
 onMounted(() => {
   fetchList();
 });
 
-const getImageUrl = (imageName: string, type: string = 'culture') => {
+const getImageUrl = (imageName: string, type: string = "culture") => {
   if (!imageName) return "";
   return getUploadUrl(`${type}/${imageName}`);
 };
@@ -286,7 +435,9 @@ const handleAdd = () => {
   form.title = "";
   form.content = [""];
   form.icon_img = "";
-  const maxOrder = tableData.value.length ? Math.max(...tableData.value.map((r: any) => Number(r.order) || 0)) : 0;
+  const maxOrder = tableData.value.length
+    ? Math.max(...tableData.value.map((r: any) => Number(r.order) || 0))
+    : 0;
   form.order = maxOrder + 1;
   form.is_active = 1;
   dialogVisible.value = true;
@@ -309,11 +460,19 @@ const saveEdit = async (originalRow: Culture) => {
     ElMessage.error("标题不能为空");
     return;
   }
-  if (!editableRow.content || editableRow.content.length === 0 || editableRow.content.some(c => !c.trim())) {
+  if (
+    !editableRow.content ||
+    editableRow.content.length === 0 ||
+    editableRow.content.some(c => !c.trim())
+  ) {
     ElMessage.error("内容不能为空");
     return;
   }
-  if (editableRow.order === null || editableRow.order === undefined || isNaN(Number(editableRow.order))) {
+  if (
+    editableRow.order === null ||
+    editableRow.order === undefined ||
+    isNaN(Number(editableRow.order))
+  ) {
     ElMessage.error("排序不能为空且为数字");
     return;
   }
@@ -323,7 +482,7 @@ const saveEdit = async (originalRow: Culture) => {
     await cultureApi.updateCulture(originalRow.id, {
       title: editableRow.title,
       content: editableRow.content.filter(c => c.trim() !== ""),
-      order: Number(editableRow.order),
+      order: Number(editableRow.order)
     });
     originalRow.title = editableRow.title;
     originalRow.content = editableRow.content;
@@ -349,7 +508,7 @@ const handleDelete = (row: Culture) => {
         ElMessage.error("删除失败");
       }
     })
-    .catch(() => { });
+    .catch(() => {});
 };
 
 const handleSubmit = async () => {
@@ -361,7 +520,7 @@ const handleSubmit = async () => {
       content: form.content.filter(c => c.trim() !== ""),
       icon_img: form.icon_img,
       order: form.order,
-      is_active: form.is_active,
+      is_active: form.is_active
     };
 
     if (form.id) {
@@ -463,7 +622,7 @@ const onIconFileChange = async (e: Event) => {
   uploadingIcon.value = true;
 
   try {
-    const res: any = await uploadFile(file, 'culture');
+    const res: any = await uploadFile(file, "culture");
     if (res.success) {
       ElMessage.success("图标上传成功");
       selectedIcon.value = res.data.fileName;
@@ -510,31 +669,31 @@ const confirmIconSelect = () => {
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 16px;
   max-height: 400px;
-  overflow-y: auto;
   padding: 8px;
+  overflow-y: auto;
 }
 
 .icon-item {
-  border: 2px solid #eee;
-  border-radius: 8px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 8px;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  transition: all 0.3s;
 }
 
 .icon-item:hover {
   border-color: #409eff;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   transform: translateY(-2px);
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .icon-item.selected {
-  border-color: #409eff;
   background-color: #ecf5ff;
+  border-color: #409eff;
 }
 
 .icon-item img {
@@ -545,11 +704,11 @@ const confirmIconSelect = () => {
 }
 
 .icon-name {
+  max-width: 100%;
   font-size: 12px;
   color: #666;
-  word-break: break-all;
   text-align: center;
-  max-width: 100%;
+  word-break: break-all;
 }
 
 .hidden {

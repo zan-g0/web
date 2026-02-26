@@ -8,7 +8,7 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width:100%">
+      <el-table :data="tableData" stripe border style="width: 100%">
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column prop="id" label="ID" width="100" align="center" />
         <el-table-column prop="category" label="类别" min-width="120">
@@ -32,9 +32,15 @@
         <el-table-column prop="requirements" label="任职要求" min-width="200">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-input type="textarea" v-model="editableRow.requirements" rows="2" />
+              <el-input
+                v-model="editableRow.requirements"
+                type="textarea"
+                rows="2"
+              />
             </div>
-            <div v-else style="white-space:pre-wrap;">{{ row.requirements }}</div>
+            <div v-else style="white-space: pre-wrap">
+              {{ row.requirements }}
+            </div>
           </template>
         </el-table-column>
 
@@ -47,7 +53,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="vacancy_count" label="招聘人数" width="100" align="center">
+        <el-table-column
+          prop="vacancy_count"
+          label="招聘人数"
+          width="100"
+          align="center"
+        >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input-number v-model="editableRow.vacancy_count" :min="0" />
@@ -56,30 +67,55 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="is_active" label="启用" width="100" align="center">
+        <el-table-column
+          prop="is_active"
+          label="启用"
+          width="100"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-switch :model-value="row.is_active === 1" @change="(val) => onSwitchChange(row, val)" />
+            <el-switch
+              :model-value="row.is_active === 1"
+              @change="val => onSwitchChange(row, val)"
+            />
           </template>
         </el-table-column>
 
         <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <template v-if="editingRowId === row.id">
-              <el-button size="large" type="primary" :loading="submitLoading"
-                @click="() => saveEdit(row)">保存</el-button>
+              <el-button
+                size="large"
+                type="primary"
+                :loading="submitLoading"
+                @click="() => saveEdit(row)"
+                >保存</el-button
+              >
               <el-button size="large" @click="cancelEdit">取消</el-button>
             </template>
             <template v-else>
-              <el-button size="large" @click="() => startEdit(row)">编辑</el-button>
-              <el-button size="large" type="danger" @click="() => handleDelete(row)">删除</el-button>
+              <el-button size="large" @click="() => startEdit(row)"
+                >编辑</el-button
+              >
+              <el-button
+                size="large"
+                type="danger"
+                @click="() => handleDelete(row)"
+                >删除</el-button
+              >
             </template>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="640px" @close="handleDialogClose">
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      width="640px"
+      @close="handleDialogClose"
+    >
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="类别" prop="category">
           <el-input v-model="form.category" />
         </el-form-item>
@@ -89,7 +125,7 @@
         </el-form-item>
 
         <el-form-item label="任职要求" prop="requirements">
-          <el-input type="textarea" v-model="form.requirements" rows="4" />
+          <el-input v-model="form.requirements" type="textarea" rows="4" />
         </el-form-item>
 
         <el-form-item label="薪资范围" prop="salary_range">
@@ -101,13 +137,18 @@
         </el-form-item>
 
         <el-form-item label="启用" prop="is_active">
-          <el-switch :model-value="form.is_active === 1" @change="(val) => (form.is_active = val ? 1 : 0)" />
+          <el-switch
+            :model-value="form.is_active === 1"
+            @change="val => (form.is_active = val ? 1 : 0)"
+          />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">保存</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="handleSubmit"
+          >保存</el-button
+        >
       </template>
     </el-dialog>
   </div>
@@ -121,7 +162,7 @@ import {
   getJobPositions,
   createJobPositionApi,
   updateJobPositionApi,
-  deleteJobPositionApi,
+  deleteJobPositionApi
 } from "@/api/job";
 
 interface JobPositionItem {
@@ -148,15 +189,21 @@ const form = reactive({
   salary_range: "",
   vacancy_count: 0,
   display_order: 0,
-  is_active: 1 as number,
+  is_active: 1 as number
 });
 
 const rules: FormRules = {
   category: [{ required: true, message: "类别不能为空", trigger: "blur" }],
   title: [{ required: true, message: "职位名称不能为空", trigger: "blur" }],
-  requirements: [{ required: true, message: "任职要求不能为空", trigger: "blur" }],
-  salary_range: [{ required: true, message: "薪资范围不能为空", trigger: "blur" }],
-  vacancy_count: [{ required: true, message: "招聘人数不能为空", trigger: "change" }]
+  requirements: [
+    { required: true, message: "任职要求不能为空", trigger: "blur" }
+  ],
+  salary_range: [
+    { required: true, message: "薪资范围不能为空", trigger: "blur" }
+  ],
+  vacancy_count: [
+    { required: true, message: "招聘人数不能为空", trigger: "change" }
+  ]
 };
 
 const dialogTitle = computed(() => (form.id ? "编辑招聘岗位" : "新增招聘岗位"));
@@ -187,16 +234,16 @@ const fetchList = async () => {
     } else {
       tableData.value = [];
       // 只在开发环境打印警告
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('未知的数据格式:', res);
+      if (process.env.NODE_ENV === "development") {
+        console.warn("未知的数据格式:", res);
       }
     }
 
     initialized.value = true;
   } catch (error) {
     // 只在开发环境打印错误
-    if (process.env.NODE_ENV === 'development') {
-      console.error('获取数据失败:', error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("获取数据失败:", error);
     }
     ElMessage.error("获取数据失败");
     tableData.value = [];
@@ -216,7 +263,7 @@ const handleAdd = () => {
 
   // 计算新的排序值
   const maxOrder = tableData.value.length
-    ? Math.max(...tableData.value.map((r) => Number(r.display_order) || 0))
+    ? Math.max(...tableData.value.map(r => Number(r.display_order) || 0))
     : 0;
   form.display_order = maxOrder + 1;
   form.is_active = 1;

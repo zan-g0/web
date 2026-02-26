@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { getUploadUrl } from '@/utils/urls';
 import { useCompanyData } from '@/composables/useCompanyData';
 

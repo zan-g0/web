@@ -8,45 +8,85 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width:100%" v-loading="loading">
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        stripe
+        border
+        style="width: 100%"
+      >
         <el-table-column type="index" label="序号" width="80" align="center" />
 
         <el-table-column label="图片预览" min-width="220" align="center">
           <template #default="{ row }">
-            <img :src="getImageUrl(row.image_name)" alt="banner"
-              style="max-width:200px; max-height:200px; object-fit:cover; border:1px solid #eee;"
-              @error="onImageError" />
+            <img
+              :src="getImageUrl(row.image_name)"
+              alt="banner"
+              style="
+                max-width: 200px;
+                max-height: 200px;
+                object-fit: cover;
+                border: 1px solid #eee;
+              "
+              @error="onImageError"
+            />
           </template>
         </el-table-column>
 
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template #default="{ row }">
-            <el-button size="large" type="danger" @click="() => handleDelete(row)">删除</el-button>
+            <el-button
+              size="large"
+              type="danger"
+              @click="() => handleDelete(row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
 
       <div class="flex justify-end mt-4">
-        <el-pagination background layout="prev, pager, next, sizes, total" :current-page="currentPage"
-          :page-size="pageSize" :page-sizes="[5, 10, 20, 50]" :total="total" @current-change="handleCurrentChange"
-          @size-change="handleSizeChange" />
+        <el-pagination
+          background
+          layout="prev, pager, next, sizes, total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
       </div>
     </el-card>
 
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="560px">
-      <el-form :model="form" ref="formRef" label-width="100px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="560px">
+      <el-form ref="formRef" :model="form" label-width="100px">
         <el-form-item label="上传图片">
-          <input type="file" ref="fileInput" @change="onFileChange" accept="image/*" />
-          <div v-if="previewUrl" style="margin-top:8px;">
-            <img :src="previewUrl"
-              style="max-width:200px; max-height:120px; object-fit:cover; border:1px solid #eee;" />
+          <input
+            ref="fileInput"
+            type="file"
+            accept="image/*"
+            @change="onFileChange"
+          />
+          <div v-if="previewUrl" style="margin-top: 8px">
+            <img
+              :src="previewUrl"
+              style="
+                max-width: 200px;
+                max-height: 120px;
+                object-fit: cover;
+                border: 1px solid #eee;
+              "
+            />
           </div>
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="handleSubmit">上传</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="handleSubmit"
+          >上传</el-button
+        >
       </template>
     </el-dialog>
   </div>

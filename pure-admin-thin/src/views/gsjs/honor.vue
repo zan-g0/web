@@ -8,11 +8,39 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width:100%" @sort-change="handleSortChange" :row-style="{ height: '80px' }" :cell-style="{ padding: '12px 0' }">
-        <el-table-column type="index" label="序号" width="70" align="center" fixed="left" />
-        <el-table-column prop="id" label="ID" width="80" align="center" sortable fixed="left" />
+      <el-table
+        :data="tableData"
+        stripe
+        border
+        style="width: 100%"
+        :row-style="{ height: '80px' }"
+        :cell-style="{ padding: '12px 0' }"
+        @sort-change="handleSortChange"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="70"
+          align="center"
+          fixed="left"
+        />
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="80"
+          align="center"
+          sortable
+          fixed="left"
+        />
 
-        <el-table-column prop="title" label="标题" width="180" align="center" sortable fixed="left">
+        <el-table-column
+          prop="title"
+          label="标题"
+          width="180"
+          align="center"
+          sortable
+          fixed="left"
+        >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input v-model="editableRow.title" size="large" />
@@ -24,18 +52,25 @@
         <el-table-column prop="description" label="描述" min-width="280">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-input type="textarea" v-model="editableRow.description" rows="3" size="large" />
+              <el-input
+                v-model="editableRow.description"
+                type="textarea"
+                rows="3"
+                size="large"
+              />
             </div>
-            <div v-else class="description-text">{{ row.description || '暂无描述' }}</div>
+            <div v-else class="description-text">
+              {{ row.description || "暂无描述" }}
+            </div>
           </template>
         </el-table-column>
 
         <el-table-column label="图片" width="200" align="center">
           <template #default="{ row }">
             <div class="image-cell">
-              <img 
-                v-if="row.image" 
-                :src="getUploadUrl('honor/' + row.image)" 
+              <img
+                v-if="row.image"
+                :src="getUploadUrl('honor/' + row.image)"
                 class="honor-image"
                 @error="onImageError"
               />
@@ -49,19 +84,40 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="order" label="排序" width="100" align="center" sortable>
+        <el-table-column
+          prop="order"
+          label="排序"
+          width="100"
+          align="center"
+          sortable
+        >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id" class="flex justify-center">
-              <el-input-number v-model="editableRow.order" :min="0" :max="999" controls-position="right" size="large"
-                style="width:100px;" />
+              <el-input-number
+                v-model="editableRow.order"
+                :min="0"
+                :max="999"
+                controls-position="right"
+                size="large"
+                style="width: 100px"
+              />
             </div>
             <div v-else class="order-number">{{ row.order }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="is_active" label="启用" width="90" align="center">
+        <el-table-column
+          prop="is_active"
+          label="启用"
+          width="90"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-switch :model-value="row.is_active === 1" @change="(val) => onSwitchChange(row, val)" size="large" />
+            <el-switch
+              :model-value="row.is_active === 1"
+              size="large"
+              @change="val => onSwitchChange(row, val)"
+            />
           </template>
         </el-table-column>
 
@@ -69,60 +125,119 @@
           <template #default="{ row }">
             <div class="action-buttons">
               <template v-if="editingRowId === row.id">
-                <el-button size="large" type="primary" :loading="submitLoading"
-                  @click="() => saveEdit(row)">保存</el-button>
+                <el-button
+                  size="large"
+                  type="primary"
+                  :loading="submitLoading"
+                  @click="() => saveEdit(row)"
+                  >保存</el-button
+                >
                 <el-button size="large" @click="cancelEdit">取消</el-button>
               </template>
               <template v-else>
-                <el-button size="large" type="primary" plain @click="() => startEdit(row)">编辑</el-button>
-                <el-button size="large" type="danger" plain @click="() => handleDelete(row)">删除</el-button>
+                <el-button
+                  size="large"
+                  type="primary"
+                  plain
+                  @click="() => startEdit(row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  size="large"
+                  type="danger"
+                  plain
+                  @click="() => handleDelete(row)"
+                  >删除</el-button
+                >
               </template>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      
+
       <div class="flex justify-end mt-4">
-        <el-pagination background layout="prev, pager, next, sizes, total" :current-page="currentPage"
-          :page-size="pageSize" :page-sizes="[5, 10, 20, 50]" :total="total" @current-change="handleCurrentChange"
-          @size-change="handleSizeChange" />
+        <el-pagination
+          background
+          layout="prev, pager, next, sizes, total"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="total"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+        />
       </div>
     </el-card>
 
     <!-- 新增/编辑对话框 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="700px">
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="700px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入标题" size="large" />
+          <el-input
+            v-model="form.title"
+            placeholder="请输入标题"
+            size="large"
+          />
         </el-form-item>
 
         <el-form-item label="描述" prop="description">
-          <el-input type="textarea" v-model="form.description" rows="4" placeholder="请输入描述" size="large" />
+          <el-input
+            v-model="form.description"
+            type="textarea"
+            rows="4"
+            placeholder="请输入描述"
+            size="large"
+          />
         </el-form-item>
 
         <el-form-item label="图片" prop="image">
           <div class="flex items-center">
-            <input type="file" ref="fileInput" @change="onFileChange" accept="image/*" class="hidden" />
+            <input
+              ref="fileInput"
+              type="file"
+              accept="image/*"
+              class="hidden"
+              @change="onFileChange"
+            />
             <el-button type="primary" size="large" @click="triggerUpload">
               <el-icon>
                 <Upload />
-              </el-icon> 上传图片
+              </el-icon>
+              上传图片
             </el-button>
-            <span class="ml-3 text-gray-500" v-if="uploading">上传中...</span>
+            <span v-if="uploading" class="ml-3 text-gray-500">上传中...</span>
           </div>
 
           <!-- 图片预览 -->
           <div v-if="previewUrl || form.image" class="mt-3">
             <p class="text-sm text-gray-500 mb-2">预览：</p>
             <div class="relative inline-block">
-              <img :src="previewUrl || getUploadUrl('honor/' + form.image)"
-                style="max-width:220px; max-height:150px; object-fit:cover; border-radius:4px; border:1px solid #eee;" />
-              <el-button v-if="previewUrl || form.image" type="danger" :icon="Delete" circle size="small"
-                class="absolute -top-2 -right-2" @click="clearImage" />
+              <img
+                :src="previewUrl || getUploadUrl('honor/' + form.image)"
+                style="
+                  max-width: 220px;
+                  max-height: 150px;
+                  object-fit: cover;
+                  border: 1px solid #eee;
+                  border-radius: 4px;
+                "
+              />
+              <el-button
+                v-if="previewUrl || form.image"
+                type="danger"
+                :icon="Delete"
+                circle
+                size="small"
+                class="absolute -top-2 -right-2"
+                @click="clearImage"
+              />
             </div>
           </div>
 
-          <div v-if="form.image && !previewUrl" class="mt-2 text-sm text-gray-500">
+          <div
+            v-if="form.image && !previewUrl"
+            class="mt-2 text-sm text-gray-500"
+          >
             当前图片: {{ form.image }}
           </div>
         </el-form-item>
@@ -132,13 +247,23 @@
         </el-form-item>
 
         <el-form-item label="启用" prop="is_active">
-          <el-switch :model-value="form.is_active === 1" @change="(val) => (form.is_active = val ? 1 : 0)" size="large" />
+          <el-switch
+            :model-value="form.is_active === 1"
+            size="large"
+            @change="val => (form.is_active = val ? 1 : 0)"
+          />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button size="large" @click="dialogVisible = false">取消</el-button>
-        <el-button size="large" type="primary" :loading="submitLoading" @click="handleSubmit">保存</el-button>
+        <el-button
+          size="large"
+          type="primary"
+          :loading="submitLoading"
+          @click="handleSubmit"
+          >保存</el-button
+        >
       </template>
     </el-dialog>
   </div>
@@ -185,12 +310,12 @@ const form = reactive({
   description: "",
   image: "",
   order: 0,
-  is_active: 1,
+  is_active: 1
 });
 
 const rules: FormRules = {
   title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
-  order: [{ required: true, message: "排序不能为空", trigger: "change" }],
+  order: [{ required: true, message: "排序不能为空", trigger: "change" }]
 };
 
 const dialogTitle = computed(() => (form.id ? "编辑荣誉" : "新增荣誉"));
@@ -254,7 +379,7 @@ const handleAdd = () => {
 
   // 计算最大排序值
   const maxOrder = tableData.value.length
-    ? Math.max(...tableData.value.map((r) => Number(r.order) || 0))
+    ? Math.max(...tableData.value.map(r => Number(r.order) || 0))
     : 0;
   form.order = maxOrder + 1;
 
@@ -280,7 +405,11 @@ const saveEdit = async (originalRow: HonorItem) => {
     ElMessage.error("标题不能为空");
     return;
   }
-  if (editableRow.order === null || editableRow.order === undefined || isNaN(Number(editableRow.order))) {
+  if (
+    editableRow.order === null ||
+    editableRow.order === undefined ||
+    isNaN(Number(editableRow.order))
+  ) {
     ElMessage.error("排序不能为空且为数字");
     return;
   }
@@ -290,7 +419,7 @@ const saveEdit = async (originalRow: HonorItem) => {
     await updateHonor(originalRow.id, {
       title: editableRow.title,
       description: editableRow.description,
-      order: Number(editableRow.order),
+      order: Number(editableRow.order)
     });
 
     // 更新本地数据
@@ -319,7 +448,7 @@ const handleDelete = (row: HonorItem) => {
         ElMessage.error("删除失败");
       }
     })
-    .catch(() => { });
+    .catch(() => {});
 };
 
 const triggerUpload = () => {
@@ -335,7 +464,7 @@ const onFileChange = async (e: Event) => {
   uploading.value = true;
 
   try {
-    const res: any = await uploadFile(file, 'honor');
+    const res: any = await uploadFile(file, "honor");
     if (res.success) {
       form.image = res.data.fileName;
       ElMessage.success("图片上传成功");
@@ -409,22 +538,22 @@ const onSwitchChange = async (row: any, val: boolean) => {
 
 const onImageError = (e: Event) => {
   const img = e.target as HTMLImageElement;
-  img.style.display = 'none';
-  img.parentElement?.classList.add('image-error');
+  img.style.display = "none";
+  img.parentElement?.classList.add("image-error");
 };
 </script>
 
 <style scoped>
 .honor-management .el-table th {
+  padding: 15px 0;
   font-size: 1.2rem;
   font-weight: 600;
-  padding: 15px 0;
   background-color: #f5f7fa;
 }
 
 .honor-management .el-table td {
-  font-size: 1.15rem;
   padding: 15px 0;
+  font-size: 1.15rem;
 }
 
 .title-text,
@@ -435,11 +564,12 @@ const onImageError = (e: Event) => {
   color: #303133;
   text-align: center;
 }
+
 /* 图片列样式优化 */
 .honor-management .el-table .image-cell {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   min-height: 140px;
 }
 
@@ -447,33 +577,33 @@ const onImageError = (e: Event) => {
   width: 220px;
   height: 160px;
   object-fit: cover;
-  border-radius: 8px;
   border: 1px solid #e4e7ed;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 /* 操作按钮样式优化 */
 .honor-management .el-table .action-buttons {
   display: flex;
-  justify-content: center;
   gap: 12px;
+  justify-content: center;
 }
 
 .honor-management .el-table .action-buttons .el-button {
-  font-size: 1.1rem;
   padding: 10px 18px;
+  font-size: 1.1rem;
 }
 
 .honor-management .el-table .action-buttons .el-button--large {
-  font-size: 1.1rem;
   padding: 12px 20px;
+  font-size: 1.1rem;
 }
 
 /* 表格整体样式优化 */
 .honor-management .el-table {
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 5%);
 }
 
 .honor-management .el-table--border {
@@ -490,22 +620,22 @@ const onImageError = (e: Event) => {
 
 /* 无图片占位符样式 */
 .honor-management .no-image-placeholder {
-  width: 140px;
-  height: 140px;
-  background-color: #f5f7fa;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #909399;
+  width: 140px;
+  height: 140px;
   font-size: 1.1rem;
+  color: #909399;
+  background-color: #f5f7fa;
   border: 1px dashed #dcdfe6;
+  border-radius: 8px;
 }
 
 .honor-management .no-image-placeholder .el-icon {
-  font-size: 2.4rem;
   margin-bottom: 6px;
+  font-size: 2.4rem;
 }
 
 .hidden {
