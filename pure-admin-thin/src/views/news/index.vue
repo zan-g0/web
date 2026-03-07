@@ -19,18 +19,18 @@
         @sort-change="handleSortChange"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" fixed="left" />
+        <el-table-column type="selection" width="45" fixed="left" />
         <el-table-column
           type="index"
           label="序号"
-          width="70"
+          width="60"
           align="center"
           fixed="left"
         />
         <el-table-column
           prop="id"
           label="ID"
-          width="80"
+          width="70"
           align="center"
           sortable
           fixed="left"
@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="summary" label="摘要" min-width="250">
+        <el-table-column prop="summary" label="摘要" min-width="200">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input
@@ -90,7 +90,7 @@
         <el-table-column
           prop="category"
           label="分类"
-          width="120"
+          width="130"
           align="center"
         >
           <template #default="{ row }">
@@ -103,14 +103,14 @@
         <el-table-column
           prop="author"
           label="作者"
-          width="120"
+          width="85"
           align="center"
         />
 
         <el-table-column
           prop="views"
           label="浏览量"
-          width="90"
+          width="95"
           align="center"
           sortable
         >
@@ -119,7 +119,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="状态" width="100" align="center">
+        <el-table-column prop="status" label="状态" width="110" align="center">
           <template #default="{ row }">
             <el-tag
               :type="row.status === 'published' ? 'success' : 'info'"

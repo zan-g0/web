@@ -17,14 +17,14 @@
       >
         <el-table-column type="index" label="序号" width="80" align="center" />
 
-        <el-table-column label="图片预览" min-width="220" align="center">
+        <el-table-column label="图片预览" min-width="300" align="center">
           <template #default="{ row }">
             <img
               :src="getImageUrl(row.image_name)"
               alt="banner"
               style="
-                max-width: 200px;
-                max-height: 200px;
+                max-width: 400px;
+                max-height: 400px;
                 object-fit: cover;
                 border: 1px solid #eee;
               "

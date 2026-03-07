@@ -10,8 +10,8 @@
 
       <el-table :data="tableData" stripe border style="width: 100%">
         <el-table-column type="index" label="序号" width="80" align="center" />
-        <el-table-column prop="id" label="ID" width="100" align="center" />
-        <el-table-column prop="category" label="类别" min-width="120">
+        <el-table-column prop="id" label="ID" width="80" align="center" />
+        <el-table-column prop="category" label="类别" min-width="40">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input v-model="editableRow.category" />
@@ -20,7 +20,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="title" label="职位名称" min-width="120">
+        <el-table-column prop="title" label="职位名称" min-width="80">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input v-model="editableRow.title" />
@@ -29,7 +29,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="requirements" label="任职要求" min-width="200">
+        <el-table-column prop="requirements" label="任职要求" min-width="200" align="center">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input

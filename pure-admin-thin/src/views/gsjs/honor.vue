@@ -49,7 +49,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="description" label="描述" min-width="280">
+        <el-table-column prop="description" label="描述" min-width="150" align="center">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input
@@ -65,7 +65,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="图片" width="200" align="center">
+        <el-table-column label="图片" width="400" align="center">
           <template #default="{ row }">
             <div class="image-cell">
               <img

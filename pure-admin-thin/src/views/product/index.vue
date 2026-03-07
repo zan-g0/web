@@ -23,14 +23,14 @@
         <el-table-column
           type="index"
           label="序号"
-          width="70"
+          width="60"
           align="center"
           fixed="left"
         />
         <el-table-column
           prop="id"
           label="ID"
-          width="80"
+          width="70"
           align="center"
           sortable
           fixed="left"
@@ -39,7 +39,7 @@
         <el-table-column
           prop="name"
           label="产品名称"
-          width="200"
+          width="120"
           align="left"
           sortable
           fixed="left"
@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="description" label="产品描述" min-width="300">
+        <el-table-column prop="description" label="产品描述" min-width="100" align="center">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input
@@ -88,7 +88,7 @@
         <el-table-column
           prop="display_order"
           label="排序"
-          width="100"
+          width="80"
           align="center"
           sortable
         >
@@ -110,7 +110,7 @@
         <el-table-column
           prop="is_active"
           label="状态"
-          width="100"
+          width="150"
           align="center"
         >
           <template #default="{ row }">
@@ -626,20 +626,21 @@ const onImageError = (e: Event) => {
 .name-text {
   font-weight: 500;
   color: #303133;
+  font-size: 1.3rem;  
 }
 
 .description-text {
   max-height: 80px;
   padding: 4px 8px;
   overflow-y: auto;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   line-height: 1.5;
   background-color: #fafafa;
   border-radius: 4px;
 }
 
 .order-number {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: #409eff;
 }
@@ -667,7 +668,7 @@ const onImageError = (e: Event) => {
 
 .action-buttons .el-button {
   padding: 10px 16px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .no-image-placeholder {
@@ -677,7 +678,7 @@ const onImageError = (e: Event) => {
   justify-content: center;
   width: 140px;
   height: 100px;
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #909399;
   background-color: #f5f7fa;
   border: 1px dashed #dcdfe6;
@@ -699,6 +700,6 @@ const onImageError = (e: Event) => {
 }
 
 :deep(.el-switch__label) {
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 </style>
