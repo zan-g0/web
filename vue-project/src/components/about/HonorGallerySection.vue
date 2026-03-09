@@ -11,23 +11,20 @@
       </div>
 
       <div class="grid honor-grid gap-10">
-        <div
-          v-for="item in honor"
-          :key="item.id"
+        <div v-for="item in honor" :key="item.id"
           class="honor-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 border border-transparent hover:border-green-200"
-          v-scroll-animate
-        >
-          <div class="relative overflow-hidden flex items-center justify-center min-h-[200px]">
-            <img
-              :src="getUploadUrl('honor/' + item.image)"
-              :alt="item.title"
-              class="max-w-full max-h-full object-contain transition-transform duration-700 hover:scale-110"
-              loading="lazy"
-            >
+          v-scroll-animate>
+
+          <div class="relative overflow-hidden flex items-center justify-center mx-auto bg-gray-100"
+            style="width: 230px; height: 150px; min-width: 230px; min-height: 150px; max-width: 230px; max-height: 150px;">
+            <img :src="getUploadUrl('honor/' + item.image)" :alt="item.title"
+              style="width: 230px; height: 150px; object-fit: contain; max-width: none; max-height: none;">
           </div>
+
           <div class="p-8 relative">
             <div class="mb-6">
-              <h3 class="text-2xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-green-50 to-white px-4 py-2 rounded-lg inline-block">
+              <h3
+                class="text-2xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-green-50 to-white px-4 py-2 rounded-lg inline-block">
                 {{ item.title }}
               </h3>
             </div>
@@ -38,8 +35,11 @@
 
       <div v-if="honor.length === 0" class="text-center py-16" v-scroll-animate>
         <div class="bg-white rounded-2xl p-12 shadow-lg inline-block">
-          <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
           </svg>
           <p class="text-gray-500 text-xl">暂无荣誉资质信息</p>
         </div>
@@ -75,12 +75,14 @@ defineProps<{
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 .honor-divider {
   height: 3px;
   background: linear-gradient(90deg, transparent, #2c5e2e, transparent);
   width: 80px;
   margin: 0 auto;
 }
+
 .honor-card {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;

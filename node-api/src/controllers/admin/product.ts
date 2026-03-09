@@ -39,7 +39,7 @@ export const getProducts = async (req: Request, res: Response) => {
 // 获取单个产品详情
 export const getProductById = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
 
     const [rows]: any = await pool.query(
       `SELECT id, name, description, image_name, display_order, is_active, created_at, updated_at 
@@ -110,7 +110,7 @@ export const createProduct = async (req: Request, res: Response) => {
 // 更新产品
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const body: any = req.body || {};
     const sets: string[] = [];
     const params: any[] = [];
@@ -176,7 +176,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 // 删除产品
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
 
     // 先查询产品信息，获取图片名称
     const [rows]: any = await pool.query(
@@ -275,7 +275,7 @@ export const batchDeleteProducts = async (req: Request, res: Response) => {
 // 更新产品状态（激活/禁用）
 export const updateProductStatus = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const { is_active } = req.body;
 
     if (is_active === undefined || is_active === null) {

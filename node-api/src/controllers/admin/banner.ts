@@ -3,6 +3,9 @@ import pool from "../../config/db";
 import path from "path";
 import fs from "fs";
 
+// 从环境变量获取上传目录，默认为项目根目录下的 uploads
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, "../../../uploads");
+
 // 获取轮播图列表（带分页）
 export const getBanners = async (req: Request, res: Response) => {
   try {
@@ -14,11 +17,20 @@ export const getBanners = async (req: Request, res: Response) => {
       "SELECT id, image_name FROM banners ORDER BY id DESC LIMIT ? OFFSET ?",
       [size, offset],
     );
+
+    // 为每个图片生成完整的访问URL
+    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    const dataWithUrl = rows.map((row: any) => ({
+      ...row,
+      image_url: `${baseUrl}/uploads/banners/${row.image_name}`
+    }));
+
     const [countRows] = await pool.query<any[]>(
       "SELECT COUNT(*) as total FROM banners",
     );
+    
     res.json({
-      data: rows,
+      data: dataWithUrl,
       total: countRows[0].total,
     });
   } catch (error) {
@@ -28,7 +40,7 @@ export const getBanners = async (req: Request, res: Response) => {
 };
 
 // 创建轮播图
-export const createBanner = async (req: Request, res: Response) => {
+export const createBanners = async (req: Request, res: Response) => {
   try {
     const { image_name } = req.body;
     const [result]: any = await pool.query(
@@ -37,15 +49,15 @@ export const createBanner = async (req: Request, res: Response) => {
     );
     res.json({ success: true, id: result.insertId });
   } catch (error) {
-    console.error("createBanner error:", error);
+    console.error("createBanners error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 // 删除轮播图
-export const deleteBanner = async (req: Request, res: Response) => {
+export const deleteBanners = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     if (!id) {
       return res.status(400).json({ error: "id必填" });
     }
@@ -55,15 +67,17 @@ export const deleteBanner = async (req: Request, res: Response) => {
       "SELECT image_name FROM banners WHERE id = ?",
       [id],
     );
+    
     if (rows.length > 0) {
-      // 删除对应的文件
+      // 删除对应的文件 - 使用环境变量或固定路径
       const imageName = rows[0].image_name;
-      const uploadDir = path.join(__dirname, "../../../uploads/banners");
-      const filePath = path.join(uploadDir, imageName);
+      const bannersDir = path.join(UPLOADS_DIR, "banners");
+      const filePath = path.join(bannersDir, imageName);
 
       // 如果文件存在则删除
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
+        console.log(`Deleted file: ${filePath}`);
       }
     }
 

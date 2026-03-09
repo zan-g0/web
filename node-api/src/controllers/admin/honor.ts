@@ -39,7 +39,7 @@ export const createHonor = async (req: Request, res: Response) => {
 
 export const updateHonor = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const body: any = req.body || {};
     const sets: string[] = [];
     const params: any[] = [];
@@ -85,7 +85,7 @@ export const updateHonor = async (req: Request, res: Response) => {
 // 删除荣誉
 export const deleteHonor = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const [rows]: any = await pool.query("SELECT image FROM company_honors WHERE id = ?", [id]);
     if (!rows.length) {
       return res.status(404).json({ error: "not found" });

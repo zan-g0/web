@@ -59,7 +59,7 @@
       </div>
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="dialogTitle" width="560px">
+    <el-dialog v-model="dialogVisible" title="上传公司图" width="560px">
       <el-form ref="formRef" label-width="100px">
         <el-form-item label="上传图片">
           <input

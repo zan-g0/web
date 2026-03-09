@@ -3,6 +3,9 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+// 获取上传目录基础路径
+const UPLOADS_BASE_DIR = process.env.UPLOADS_DIR || path.join(__dirname, '../../../uploads');
+
 // 确保上传目录存在
 const ensureUploadDir = (dirPath: string) => {
   if (!fs.existsSync(dirPath)) {
@@ -12,7 +15,7 @@ const ensureUploadDir = (dirPath: string) => {
 
 // 支持的上传类型和对应的文件夹
 export const UPLOAD_TYPES = {
-  BANNER: 'banners',
+  BANNERS: 'banners',
   PRODUCT: 'product', 
   COMPANY: 'company',
   NEWS: 'news',
@@ -24,7 +27,6 @@ export type UploadType = typeof UPLOAD_TYPES[keyof typeof UPLOAD_TYPES];
 
 // 生成唯一的文件名
 const generateUniqueFileName = (originalName: string): string => {
-  // 修复：应该是 extname 而不是 xextname
   const ext = path.extname(originalName);
   const name = path.basename(originalName, ext);
   const timestamp = Date.now();
@@ -32,16 +34,20 @@ const generateUniqueFileName = (originalName: string): string => {
   return `${name}_${timestamp}_${random}${ext}`;
 };
 
+// 获取上传目录的完整路径
+const getUploadDir = (uploadType: UploadType): string => {
+  return path.join(UPLOADS_BASE_DIR, uploadType);
+};
+
 // 动态存储配置工厂
 const createStorage = (uploadType: UploadType) => {
   return multer.diskStorage({
     destination: (req, file, cb) => {
-      const uploadDir = path.join(__dirname, '../../../uploads', uploadType);
+      const uploadDir = getUploadDir(uploadType);
       ensureUploadDir(uploadDir);
       cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-      // 优先使用自定义文件名，否则生成唯一文件名
       const customName = req.body.newName as string;
       const fileName = customName ? 
         (customName.includes('.') ? customName : `${customName}${path.extname(file.originalname)}`) :
@@ -64,15 +70,12 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
 export const createUpload = (uploadType: UploadType) => {
   return multer({
     storage: createStorage(uploadType),
-    fileFilter: fileFilter,
-    limits: {
-      fileSize: 5 * 1024 * 1024 // 5MB 限制
-    }
+    fileFilter: fileFilter
   });
 };
 
 // 各种类型的上传中间件实例
-export const bannerUpload = createUpload(UPLOAD_TYPES.BANNER);
+export const bannersUpload = createUpload(UPLOAD_TYPES.BANNERS);
 export const productUpload = createUpload(UPLOAD_TYPES.PRODUCT);
 export const companyUpload = createUpload(UPLOAD_TYPES.COMPANY);
 export const newsUpload = createUpload(UPLOAD_TYPES.NEWS);
@@ -91,6 +94,14 @@ export const handleUpload = async (req: Request, res: Response, uploadType: Uplo
 
     const fileName = req.file.filename;
     const filePath = `/uploads/${uploadType}/${fileName}`;
+
+    // 调试信息
+    console.log('上传成功:', {
+      type: uploadType,
+      fileName,
+      physicalPath: path.join(getUploadDir(uploadType), fileName),
+      publicPath: filePath
+    });
 
     res.json({
       success: true,
@@ -115,8 +126,8 @@ export const handleUpload = async (req: Request, res: Response, uploadType: Uplo
 };
 
 // 轮播图上传
-export const uploadBanner = async (req: Request, res: Response) => {
-  await handleUpload(req, res, UPLOAD_TYPES.BANNER);
+export const uploadBanners = async (req: Request, res: Response) => {
+  await handleUpload(req, res, UPLOAD_TYPES.BANNERS);
 };
 
 // 产品图片上传
@@ -171,7 +182,9 @@ export const getImagesByType = async (req: Request, res: Response) => {
     }
 
     const uploadType = type as UploadType;
-    const uploadDir = path.join(__dirname, '../../../../uploads', uploadType);
+    const uploadDir = getUploadDir(uploadType);
+
+    console.log('获取图片列表:', { type: uploadType, path: uploadDir });
 
     if (!fs.existsSync(uploadDir)) {
       return res.json({
@@ -201,7 +214,7 @@ export const getImagesByType = async (req: Request, res: Response) => {
           modifyTime: stats.mtime
         };
       })
-      .sort((a, b) => b.modifyTime.getTime() - a.modifyTime.getTime()); // 按修改时间倒序
+      .sort((a, b) => b.modifyTime.getTime() - a.modifyTime.getTime());
 
     res.json({
       success: true,
@@ -240,11 +253,13 @@ export const deleteImage = async (req: Request, res: Response) => {
       });
     }
 
-    const uploadDir = path.join(__dirname, '../../../uploads', type);
+    const uploadDir = getUploadDir(type as UploadType);
     const filePath = path.join(uploadDir, filename);
 
+    console.log('删除图片:', { type, filename, path: filePath });
+
     // 安全检查：确保文件路径在 uploads 目录内
-    const relativePath = path.relative(path.join(__dirname, '../../../uploads'), filePath);
+    const relativePath = path.relative(UPLOADS_BASE_DIR, filePath);
     if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
       return res.status(403).json({
         success: false,

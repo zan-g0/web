@@ -47,7 +47,7 @@ export const createprofile = async (req: Request, res: Response) => {
 // 管理端：更新
 export const updateprofile = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     console.log('[updateprofile] raw body:', req.body);
 
     const body: any = req.body || {};
@@ -96,7 +96,7 @@ export const updateprofile = async (req: Request, res: Response) => {
 // 管理端：删除
 export const deleteprofile = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     await pool.query('DELETE FROM about_profile WHERE id = ?', [id]);
     res.json({ success: true });
   } catch (error) {

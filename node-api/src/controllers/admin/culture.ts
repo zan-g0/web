@@ -256,7 +256,7 @@ export const updateCulture = async (req: Request, res: Response) => {
 // 删除文化条目
 export const deleteCulture = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     if (!id) {
       return res.status(400).json({ error: "id必填" });
     }

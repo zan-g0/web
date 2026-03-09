@@ -39,7 +39,7 @@ export const createprofileimage = async (req: Request, res: Response) => {
   try {
     const { image_name } = req.body;
     const [result]: any = await pool.query(
-      "INSERT INTO aprofileimage (image_name) VALUES (?)",
+      "INSERT INTO profileimage (image_name) VALUES (?)",
       [image_name],
     );
     res.json({ success: true, id: result.insertId });
@@ -52,7 +52,7 @@ export const createprofileimage = async (req: Request, res: Response) => {
 // 删除简介图
 export const deleteprofileimage = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     if (!id) {
       return res.status(400).json({ error: "id必填" });
     }

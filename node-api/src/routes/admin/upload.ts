@@ -1,12 +1,12 @@
 ﻿import { Router } from 'express';
 import {
-  bannerUpload,
+  bannersUpload,
   productUpload,
   companyUpload,
   newsUpload,
   cultureUpload,
   honorUpload,
-  uploadBanner,
+  uploadBanners,
   uploadProduct,
   uploadCompany,
   uploadNews,
@@ -20,7 +20,7 @@ import {
 const router = Router();
 
 // 轮播图上传
-router.post('/banner', bannerUpload.single('image'), uploadBanner);
+router.post('/banners', bannersUpload.single('image'), uploadBanners);
 
 // 产品图片上传
 router.post('/product', productUpload.single('image'), uploadProduct);
@@ -43,8 +43,8 @@ router.post('/dynamic', (req, res, next) => {
   let uploadMiddleware;
 
   switch (type) {
-    case 'banners':
-      uploadMiddleware = bannerUpload;
+    case 'banner':
+      uploadMiddleware = bannersUpload;
       break;
     case 'product':
       uploadMiddleware = productUpload;
@@ -91,8 +91,8 @@ router.post('/:type/multiple', (req, res, next) => {
   let uploadMiddleware;
 
   switch (type) {
-    case 'banners':
-      uploadMiddleware = bannerUpload;
+    case 'banner':
+      uploadMiddleware = bannersUpload;
       break;
     case 'product':
       uploadMiddleware = productUpload;

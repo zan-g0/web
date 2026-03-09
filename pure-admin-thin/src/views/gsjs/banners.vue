@@ -21,7 +21,7 @@
           <template #default="{ row }">
             <img
               :src="getImageUrl(row.image_name)"
-              alt="banner"
+              alt="banners"
               style="
                 max-width: 400px;
                 max-height: 400px;
@@ -95,7 +95,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { getBannerList, createBanner, deleteBanner } from "@/api/banner";
+import { getBannersList, createBanners, deleteBanners } from "@/api/banner";
 import { uploadFile } from "@/api/upload";
 import { getUploadUrl } from "@/router/urls";
 
@@ -126,7 +126,7 @@ const fetchList = async () => {
   loading.value = true;
   try {
     const params: any = { page: currentPage.value, size: pageSize.value };
-    const res: any = await getBannerList(params);
+    const res: any = await getBannersList(params);
     tableData.value = res.data;
     total.value = res.total;
   } catch {
@@ -144,8 +144,8 @@ const getImageUrl = (imageName: string) => {
 };
 
 const onImageError = (e: Event) => {
-  const img = e.target as HTMLImageElement;
-  img.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y2ZjZmNiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNkZGRkZGQiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==`;
+  // const img = e.target as HTMLImageElement;
+  // img.src = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y2ZjZmNiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNkZGRkZGQiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==`;
 };
 
 const handleAdd = () => {
@@ -177,7 +177,7 @@ const handleSubmit = async () => {
       return;
     }
 
-    await createBanner({
+    await createBanners({
       image_name: res.data.fileName
     });
 
@@ -195,7 +195,7 @@ const handleDelete = (row: BannerItem) => {
   ElMessageBox.confirm("确认删除该轮播图？", "提示", { type: "warning" })
     .then(async () => {
       try {
-        await deleteBanner(row.id);
+        await deleteBanners(row.id);
         ElMessage.success("删除成功");
         fetchList();
       } catch {

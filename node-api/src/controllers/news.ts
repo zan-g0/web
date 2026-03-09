@@ -79,7 +79,7 @@ export default getNews;
 // GET /news/:id  获取单条详情并增加浏览量
 export const getNewsDetail = async (req: Request, res: Response) => {
 	try {
-		const id = parseInt(req.params.id, 10);
+		const id = parseInt(<string>req.params.id, 10);
 		if (isNaN(id)) return res.status(400).json({ code: -1, message: '无效的 id' });
 
 		// 先查询详情

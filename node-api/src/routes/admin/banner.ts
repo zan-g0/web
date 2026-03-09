@@ -1,16 +1,16 @@
 import { Router } from "express";
 import {
   getBanners,
-  createBanner,
-  deleteBanner
+  createBanners,
+  deleteBanners
 } from "../../controllers/admin/banner";
 const router = Router();
 
 // 获取轮播图列表
 router.get("/", getBanners);
 // 新增轮播图
-router.post("/", createBanner);
+router.post("/", createBanners);
 // 删除轮播图
-router.delete("/:id", deleteBanner);
+router.delete("/:id", deleteBanners);
 
 export default router;

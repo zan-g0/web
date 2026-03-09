@@ -33,7 +33,7 @@ export const getNews = async (req: Request, res: Response) => {
 // 获取单个新闻详情
 export const getNewsById = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     
     const [rows]: any = await pool.query(
       `SELECT id, title, summary, content, cover_image, category, author, status, 
@@ -99,7 +99,7 @@ export const createNews = async (req: Request, res: Response) => {
 // 更新新闻
 export const updateNews = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const body: any = req.body || {};
     const sets: string[] = [];
     const params: any[] = [];
@@ -169,7 +169,7 @@ export const updateNews = async (req: Request, res: Response) => {
 // 删除新闻
 export const deleteNews = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
 
     // 先查询新闻信息，获取封面图片路径
     const [rows]: any = await pool.query(
@@ -253,7 +253,7 @@ export const batchDeleteNews = async (req: Request, res: Response) => {
 // 更新新闻状态（发布/草稿）
 export const updateNewsStatus = async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(<string>req.params.id);
     const { status } = req.body;
 
     if (!status || !['draft', 'published'].includes(status)) {
