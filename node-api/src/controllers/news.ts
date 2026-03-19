@@ -23,7 +23,7 @@ export const getNews = async (req: Request, res: Response) => {
 		const sort = (req.query.sort as string) || 'publish_date';
 		const order = (req.query.order as string) === 'asc' ? 'ASC' : 'DESC';
 
-		const where: string[] = [`status = 'published'`];
+		const where: string[] = [`is_active = 1`];
 		const params: any[] = [];
 
 		if (category) {
@@ -83,7 +83,7 @@ export const getNewsDetail = async (req: Request, res: Response) => {
 		if (isNaN(id)) return res.status(400).json({ code: -1, message: '无效的 id' });
 
 		// 先查询详情
-		const sql = 'SELECT id, title, summary, content, cover_image, category, author, publish_date, views FROM news WHERE id = ? AND status = \"published\" LIMIT 1';
+		const sql = 'SELECT id, title, summary, content, cover_image, category, author, publish_date, views FROM news WHERE id = ? AND is_active = 1 LIMIT 1';
 		const [rows]: any = await pool.query(sql, [id]);
 		const item = rows && rows[0];
 		if (!item) return res.status(404).json({ code: -1, message: '新闻未找到' });

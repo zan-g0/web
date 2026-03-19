@@ -1,8 +1,8 @@
 <template>
   <section class="page-bg" v-scroll-animate>
     <div class="news-page">
-          <h1 class="news-title">新闻中心</h1>
-    <div class="news-divider"></div>
+      <h1 class="news-title">新闻中心</h1>
+      <div class="news-divider"></div>
       <div class="toolbar">
         <input v-model="search" @keyup.enter="reload" placeholder="搜索新闻标题或摘要" />
         <button @click="reload">搜索</button>
@@ -10,8 +10,7 @@
 
       <ul class="news-list">
         <li v-for="item in items" :key="item.id" class="news-item" @click="openDetail(item.id)">
-          <img v-if="item.cover_image" :src="getUploadUrl('news/' + item.cover_image)" alt="封面"
-            class="cover" />
+          <img v-if="item.cover_image" :src="getUploadUrl('news/' + item.cover_image)" alt="封面" class="cover" />
           <div class="body">
             <h3 class="title">{{ item.title }}</h3>
             <p class="summary">{{ item.summary }}</p>
@@ -38,7 +37,14 @@
             <img v-if="selected.cover_image" :src="getUploadUrl('news/' + selected.cover_image)" class="cover" />
             <div style="color:#666; font-size:14px; margin-bottom:12px">{{ formatDate(selected.publish_date) }} · {{
               selected.category || '公司新闻' }} · 作者：{{ selected.author || '-' }}</div>
-            <div class="article" v-html="formatContent(selected.content || selected.summary)"></div>
+            <div v-if="selected.summary" class="detail-summary">
+              <span class="label-text">简述</span>
+              <span v-html="formatContent(selected.summary)"></span>
+            </div>
+            <div class="detail-article">
+              <span class="label-text">详细内容</span>
+              <span v-html="formatContent(selected.content || selected.summary)"></span>
+            </div>
           </div>
           <div class="modal-footer">
             <button class="close-btn-secondary" @click.stop="closeDetail">关闭</button>
@@ -75,8 +81,8 @@ async function fetchNews() {
     if (search.value) params.append('search', search.value);
 
     const response = await axiosInstance.get(`/news?${params.toString()}`);
-    const data = response.data; 
-    
+    const data = response.data;
+
     if (data && data.code === 0) {
       items.value = data.data.items;
       total.value = data.data.total;
@@ -113,11 +119,11 @@ onMounted(() => {
 async function openDetail(id: number) {
   try {
     detailLoading.value = true;
-    
+
     // 使用 axiosInstance 的正确方式
     const response = await axiosInstance.get(`/news/${id}`); // 注意这里应该使用 id 参数
     const data = response.data; // axios 自动解析 JSON
-    
+
     if (data && data.code === 0) {
       selected.value = data.data as NewsItem & { content?: string };
     } else {
@@ -172,6 +178,7 @@ function formatContent(raw?: string | null) {
 <style scoped>
 .page-bg {
   background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
+  min-height: 90vh;
 }
 
 .news-page {
@@ -180,6 +187,7 @@ function formatContent(raw?: string | null) {
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
+
 .news-title {
   color: #2c5e2e;
   font-weight: 700;
@@ -191,16 +199,18 @@ function formatContent(raw?: string | null) {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 .news-divider {
   height: 3px;
   background: linear-gradient(90deg, transparent, #2c5e2e, transparent);
   width: 80px;
   margin: 0 auto;
 }
+
 .toolbar {
   display: flex;
   gap: 8px;
-  margin:12px;
+  margin: 12px;
 }
 
 .toolbar input {
@@ -223,7 +233,7 @@ function formatContent(raw?: string | null) {
   border-radius: 12px;
   background: white;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 16px;
@@ -231,7 +241,7 @@ function formatContent(raw?: string | null) {
 
 .news-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   border-color: #2e8b57;
 }
 
@@ -347,11 +357,34 @@ function formatContent(raw?: string | null) {
   margin-bottom: 12px
 }
 
-.article {
+.label-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c5e2e;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.detail-summary {
+  color: #444;
+  font-size: 17px;
+  line-height: 1.8;
+  padding: 12px;
+  background-color: #f8fbf7;
+  border-radius: 8px;
+  border-left: 4px solid #4caf50;
+  margin-bottom: 16px;
+}
+
+.detail-article {
   color: #444;
   line-height: 1.8;
-  font-size: 15px;
+  font-size: 16px;
   white-space: pre-wrap;
+  padding: 12px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border-left: 4px solid #4caf50;
 }
 
 .modal-footer {

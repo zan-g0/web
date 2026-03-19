@@ -546,13 +546,23 @@ const onImageError = (e: Event) => {
 <style scoped>
 .honor-management .el-table th {
   padding: 15px 0;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 600;
   background-color: #f5f7fa;
 }
 
 .honor-management .el-table td {
   padding: 15px 0;
+  font-size: 1.15rem;
+}
+
+/* 穿透 Element Plus 样式 */
+.honor-management :deep(.el-table th .cell) {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.honor-management :deep(.el-table td .cell) {
   font-size: 1.15rem;
 }
 
@@ -591,12 +601,12 @@ const onImageError = (e: Event) => {
 
 .honor-management .el-table .action-buttons .el-button {
   padding: 10px 18px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .honor-management .el-table .action-buttons .el-button--large {
   padding: 12px 20px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 /* 表格整体样式优化 */

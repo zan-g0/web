@@ -15,9 +15,9 @@ export const getProducts = async (req: Request, res: Response) => {
 
     // 获取分页数据
     const [rows]: any = await pool.query(
-      `SELECT id, name, description, image_name, display_order, is_active, created_at, updated_at 
-       FROM products 
-       ORDER BY display_order ASC, id DESC 
+      `SELECT id, name, description, image_name, txt, display_order, is_active, created_at, updated_at
+       FROM products
+       ORDER BY display_order ASC, id DESC
        LIMIT ?, ?`,
       [offset, size]
     );
@@ -42,8 +42,8 @@ export const getProductById = async (req: Request, res: Response) => {
     const id = parseInt(<string>req.params.id);
 
     const [rows]: any = await pool.query(
-      `SELECT id, name, description, image_name, display_order, is_active, created_at, updated_at 
-       FROM products 
+      `SELECT id, name, description, image_name, txt, display_order, is_active, created_at, updated_at
+       FROM products
        WHERE id = ?`,
       [id]
     );
@@ -71,26 +71,27 @@ export const getProductById = async (req: Request, res: Response) => {
 // 创建产品
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { 
-      name, 
-      description = "", 
-      image_name = "", 
-      display_order = 0, 
-      is_active = 1 
+    const {
+      name,
+      description = "",
+      image_name = "",
+      txt = "",
+      display_order = 0,
+      is_active = 1
     } = req.body;
 
     // 验证必填字段
     if (!name || typeof name !== "string") {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        error: "Product name is required" 
+        error: "Product name is required"
       });
     }
 
     const [result]: any = await pool.query(
-      `INSERT INTO products (name, description, image_name, display_order, is_active) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [name, description, image_name, display_order, is_active]
+      `INSERT INTO products (name, description, image_name, txt, display_order, is_active)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, description, image_name, txt, display_order, is_active]
     );
 
     res.json({ 
@@ -130,6 +131,10 @@ export const updateProduct = async (req: Request, res: Response) => {
         sets.push("image_name = ?");
         params.push(body.image_name);
       }
+    }
+    if ("txt" in body) {
+      sets.push("txt = ?");
+      params.push(body.txt);
     }
     if ("display_order" in body) {
       sets.push("display_order = ?");

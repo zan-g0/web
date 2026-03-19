@@ -14,8 +14,6 @@
         stripe
         border
         style="width: 100%"
-        :row-style="{ height: '100px' }"
-        :cell-style="{ padding: '12px 0' }"
         @sort-change="handleSortChange"
         @selection-change="handleSelectionChange"
       >
@@ -27,19 +25,11 @@
           align="center"
           fixed="left"
         />
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="70"
-          align="center"
-          sortable
-          fixed="left"
-        />
 
         <el-table-column
           prop="name"
           label="产品名称"
-          width="120"
+          width="110"
           align="left"
           sortable
           fixed="left"
@@ -52,13 +42,13 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="description" label="产品描述" min-width="100" align="center">
+        <el-table-column prop="description" label="产品简述" width="200" align="center">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input
                 v-model="editableRow.description"
                 type="textarea"
-                rows="3"
+                :autosize="{ minRows: 2, maxRows: 10 }"
                 size="large"
               />
             </div>
@@ -85,10 +75,26 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="txt" label="详细描述" min-width="200" align="left">
+          <template #default="{ row }">
+            <div v-if="editingRowId === row.id">
+              <el-input
+                v-model="editableRow.txt"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 10 }"
+                size="large"
+              />
+            </div>
+            <div v-else class="txt-text">
+              {{ row.txt || "暂无内容" }}
+            </div>
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="display_order"
           label="排序"
-          width="80"
+          width="100"
           align="center"
           sortable
         >
@@ -109,22 +115,19 @@
 
         <el-table-column
           prop="is_active"
-          label="状态"
-          width="150"
+          label="启用"
+          width="100"
           align="center"
         >
           <template #default="{ row }">
             <el-switch
               :model-value="row.is_active === 1"
-              size="large"
-              active-text="启用"
-              inactive-text="禁用"
               @change="val => onSwitchChange(row, val)"
             />
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="280" align="center" fixed="right">
+        <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <template v-if="editingRowId === row.id">
@@ -203,12 +206,12 @@
           <el-input v-model="form.name" placeholder="请输入产品名称" />
         </el-form-item>
 
-        <el-form-item label="产品描述" prop="description">
+        <el-form-item label="产品简述" prop="description">
           <el-input
             v-model="form.description"
             type="textarea"
             rows="4"
-            placeholder="请输入产品描述"
+            placeholder="请输入产品简述"
           />
         </el-form-item>
 
@@ -259,6 +262,15 @@
           >
             当前图片: {{ form.image_name }}
           </div>
+        </el-form-item>
+
+        <el-form-item label="详细描述" prop="txt">
+          <el-input
+            v-model="form.txt"
+            type="textarea"
+            rows="4"
+            placeholder="请输入详细描述"
+          />
         </el-form-item>
 
         <el-row :gutter="20">
@@ -322,6 +334,7 @@ interface ProductItem {
   name: string;
   description: string;
   image_name: string;
+  txt: string;
   display_order: number;
   is_active: number;
   created_at: string;
@@ -346,6 +359,7 @@ const form = reactive({
   name: "",
   description: "",
   image_name: "",
+  txt: "",
   display_order: 0,
   is_active: 1
 });
@@ -361,6 +375,7 @@ const editingRowId = ref<number | null>(null);
 const editableRow = reactive({
   name: "",
   description: "",
+  txt: "",
   display_order: 0
 });
 
@@ -419,6 +434,7 @@ const handleAdd = () => {
   form.name = "";
   form.description = "";
   form.image_name = "";
+  form.txt = "";
 
   // 计算最大排序值
   const maxOrder = tableData.value.length
@@ -437,6 +453,7 @@ const startEdit = (row: ProductItem) => {
   editingRowId.value = row.id;
   editableRow.name = row.name;
   editableRow.description = row.description;
+  editableRow.txt = row.txt;
   editableRow.display_order = Number(row.display_order) || 0;
 };
 
@@ -463,11 +480,13 @@ const saveEdit = async (originalRow: ProductItem) => {
     await updateProduct(originalRow.id, {
       name: editableRow.name,
       description: editableRow.description,
+      txt: editableRow.txt,
       display_order: Number(editableRow.display_order)
     });
 
     originalRow.name = editableRow.name;
     originalRow.description = editableRow.description;
+    originalRow.txt = editableRow.txt;
     originalRow.display_order = Number(editableRow.display_order);
 
     ElMessage.success("保存成功");
@@ -582,6 +601,7 @@ const handleSubmit = async () => {
       name: form.name,
       description: form.description,
       image_name: form.image_name,
+      txt: form.txt,
       display_order: form.display_order,
       is_active: form.is_active
     };
@@ -621,6 +641,11 @@ const onImageError = (e: Event) => {
 .products-management .el-table td {
   padding: 15px 0;
   font-size: 1.15rem;
+  height: auto;
+}
+
+.products-management .el-table tr {
+  height: auto;
 }
 
 .name-text {
@@ -630,13 +655,23 @@ const onImageError = (e: Event) => {
 }
 
 .description-text {
-  max-height: 80px;
-  padding: 4px 8px;
-  overflow-y: auto;
-  font-size: 1.3rem;
-  line-height: 1.5;
+  padding: 8px;
+  font-size: 1.15rem;
+  line-height: 1.6;
   background-color: #fafafa;
   border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.txt-text {
+  padding: 8px;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  background-color: #fafafa;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .order-number {
@@ -649,7 +684,7 @@ const onImageError = (e: Event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  padding: 10px 0;
 }
 
 .product-image {
@@ -692,14 +727,5 @@ const onImageError = (e: Event) => {
 
 .hidden {
   display: none;
-}
-
-:deep(.el-switch) {
-  --el-switch-on-color: #67c23a;
-  --el-switch-off-color: #909399;
-}
-
-:deep(.el-switch__label) {
-  font-size: 1.3rem;
 }
 </style>

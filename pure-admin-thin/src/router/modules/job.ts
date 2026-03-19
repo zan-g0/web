@@ -3,6 +3,7 @@ export default {
   path: "/job",
   meta: {
     title: "人才招聘",
+    icon: "ep:avatar",
     rank: 5
   },
   children: [

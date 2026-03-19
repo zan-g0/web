@@ -8,7 +8,14 @@
         </div>
       </div>
 
-      <el-table :data="tableData" stripe border style="width: 100%">
+      <el-table
+        :data="tableData"
+        stripe
+        border
+        style="width: 100%"
+        :row-style="{ height: '80px' }"
+        :cell-style="{ padding: '12px 0' }"
+      >
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column prop="id" label="ID" width="80" align="center" />
         <el-table-column prop="category" label="类别" min-width="40">
@@ -29,7 +36,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="requirements" label="任职要求" min-width="200" align="center">
+        <el-table-column prop="requirements" label="任职要求" min-width="200" align="left">
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
               <el-input
@@ -81,29 +88,36 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="200" align="center" fixed="right">
+        <el-table-column label="操作" width="240" align="center" fixed="right">
           <template #default="{ row }">
-            <template v-if="editingRowId === row.id">
-              <el-button
-                size="large"
-                type="primary"
-                :loading="submitLoading"
-                @click="() => saveEdit(row)"
-                >保存</el-button
-              >
-              <el-button size="large" @click="cancelEdit">取消</el-button>
-            </template>
-            <template v-else>
-              <el-button size="large" @click="() => startEdit(row)"
-                >编辑</el-button
-              >
-              <el-button
-                size="large"
-                type="danger"
-                @click="() => handleDelete(row)"
-                >删除</el-button
-              >
-            </template>
+            <div class="action-buttons">
+              <template v-if="editingRowId === row.id">
+                <el-button
+                  size="large"
+                  type="primary"
+                  :loading="submitLoading"
+                  @click="() => saveEdit(row)"
+                  >保存</el-button
+                >
+                <el-button size="large" @click="cancelEdit">取消</el-button>
+              </template>
+              <template v-else>
+                <el-button
+                  size="large"
+                  type="primary"
+                  plain
+                  @click="() => startEdit(row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  size="large"
+                  type="danger"
+                  plain
+                  @click="() => handleDelete(row)"
+                  >删除</el-button
+                >
+              </template>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -423,11 +437,35 @@ const onSwitchChange = async (row: JobPositionItem, val: boolean) => {
 
 <style scoped>
 .job-management .el-table th {
-  font-size: 1.05rem;
+  padding: 15px 0;
+  font-size: 1.15rem;
   font-weight: 600;
+  background-color: #f5f7fa;
 }
 
 .job-management .el-table td {
-  font-size: 1rem;
+  padding: 15px 0;
+  font-size: 1.15rem;
+}
+
+/* 穿透 Element Plus 样式 */
+.job-management :deep(.el-table th .cell) {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.job-management :deep(.el-table td .cell) {
+  font-size: 1.15rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.action-buttons .el-button {
+  padding: 10px 18px;
+  font-size: 1.15rem;
 }
 </style>

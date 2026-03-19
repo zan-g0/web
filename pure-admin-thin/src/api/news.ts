@@ -5,7 +5,7 @@ export const getNewsList = (params: {
   page: number;
   size: number;
   category?: string;
-  status?: string;
+  is_active?: number;
 }) => {
   return request.get("/admin/news", { params });
 };
@@ -23,7 +23,7 @@ export const createNews = (data: {
   cover_image?: string;
   category?: string;
   author?: string;
-  status?: "draft" | "published";
+  is_active?: number;
   publish_date?: string;
 }) => {
   return request.post("/admin/news", data);
@@ -39,7 +39,7 @@ export const updateNews = (
     cover_image?: string;
     category?: string;
     author?: string;
-    status?: "draft" | "published";
+    is_active?: number;
     publish_date?: string;
   }
 ) => {
@@ -57,8 +57,8 @@ export const batchDeleteNews = (ids: number[]) => {
 };
 
 // 更新新闻状态
-export const updateNewsStatus = (id: number, status: "draft" | "published") => {
-  return request.put(`/admin/news/${id}/status`, { status });
+export const updateNewsStatus = (id: number, is_active: number) => {
+  return request.put(`/admin/news/${id}/status`, { is_active });
 };
 
 // 按分类获取新闻

@@ -2,6 +2,7 @@ export default {
   path: "/gsjs",
   meta: {
     title: "公司介绍",
+    icon: "ep:office-building",
     rank: 1
   },
   children: [

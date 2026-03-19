@@ -15,10 +15,10 @@ export const getNews = async (req: Request, res: Response) => {
     
     // 获取分页数据
     const [rows]: any = await pool.query(
-      `SELECT id, title, summary, cover_image, category, author, status, views, 
-              publish_date, created_at, updated_at 
-       FROM news 
-       ORDER BY publish_date DESC, id DESC 
+      `SELECT id, title, summary, cover_image, category, author, is_active, views,
+              publish_date, created_at, updated_at
+       FROM news
+       ORDER BY publish_date DESC, id DESC
        LIMIT ?, ?`,
       [offset, size]
     );
@@ -36,9 +36,9 @@ export const getNewsById = async (req: Request, res: Response) => {
     const id = parseInt(<string>req.params.id);
     
     const [rows]: any = await pool.query(
-      `SELECT id, title, summary, content, cover_image, category, author, status, 
-              views, publish_date, created_at, updated_at 
-       FROM news 
+      `SELECT id, title, summary, content, cover_image, category, author, is_active,
+              views, publish_date, created_at, updated_at
+       FROM news
        WHERE id = ?`,
       [id]
     );
@@ -60,15 +60,15 @@ export const getNewsById = async (req: Request, res: Response) => {
 // 创建新闻
 export const createNews = async (req: Request, res: Response) => {
   try {
-    const { 
-      title, 
-      summary = "", 
-      content = "", 
-      cover_image = "", 
-      category = "", 
-      author = "", 
-      status = "draft",
-      publish_date 
+    const {
+      title,
+      summary = "",
+      content = "",
+      cover_image = "",
+      category = "",
+      author = "",
+      is_active = 1,
+      publish_date
     } = req.body;
 
     // 验证必填字段
@@ -80,9 +80,9 @@ export const createNews = async (req: Request, res: Response) => {
     const publishDate = publish_date || new Date();
 
     const [result]: any = await pool.query(
-      `INSERT INTO news (title, summary, content, cover_image, category, author, status, publish_date) 
+      `INSERT INTO news (title, summary, content, cover_image, category, author, is_active, publish_date)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [title, summary, content, cover_image, category, author, status, publishDate]
+      [title, summary, content, cover_image, category, author, is_active, publishDate]
     );
 
     res.json({ 
@@ -133,9 +133,9 @@ export const updateNews = async (req: Request, res: Response) => {
       sets.push("author = ?");
       params.push(body.author);
     }
-    if ("status" in body) {
-      sets.push("status = ?");
-      params.push(body.status);
+    if ("is_active" in body) {
+      sets.push("is_active = ?");
+      params.push(body.is_active);
     }
     if ("publish_date" in body) {
       sets.push("publish_date = ?");
@@ -250,28 +250,28 @@ export const batchDeleteNews = async (req: Request, res: Response) => {
   }
 };
 
-// 更新新闻状态（发布/草稿）
+// 更新新闻启用状态
 export const updateNewsStatus = async (req: Request, res: Response) => {
   try {
     const id = parseInt(<string>req.params.id);
-    const { status } = req.body;
+    const { is_active } = req.body;
 
-    if (!status || !['draft', 'published'].includes(status)) {
-      return res.status(400).json({ error: "Invalid status value" });
+    if (typeof is_active === 'undefined' || ![0, 1].includes(is_active)) {
+      return res.status(400).json({ error: "Invalid is_active value, must be 0 or 1" });
     }
 
     const [result]: any = await pool.query(
-      "UPDATE news SET status = ? WHERE id = ?",
-      [status, id]
+      "UPDATE news SET is_active = ? WHERE id = ?",
+      [is_active, id]
     );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "News not found" });
     }
 
-    res.json({ 
+    res.json({
       success: true,
-      message: `新闻已${status === 'published' ? '发布' : '转为草稿'}` 
+      message: `新闻已${is_active === 1 ? '启用' : '禁用'}`
     });
   } catch (error) {
     console.error("updateNewsStatus error:", error);
@@ -293,10 +293,10 @@ export const getNewsByCategory = async (req: Request, res: Response) => {
     );
 
     const [rows]: any = await pool.query(
-      `SELECT id, title, summary, cover_image, author, status, views, publish_date 
-       FROM news 
-       WHERE category = ? 
-       ORDER BY publish_date DESC, id DESC 
+      `SELECT id, title, summary, cover_image, author, is_active, views, publish_date
+       FROM news
+       WHERE category = ?
+       ORDER BY publish_date DESC, id DESC
        LIMIT ?, ?`,
       [category, offset, size]
     );
@@ -329,10 +329,10 @@ export const searchNews = async (req: Request, res: Response) => {
     );
 
     const [rows]: any = await pool.query(
-      `SELECT id, title, summary, cover_image, category, author, status, views, publish_date 
-       FROM news 
+      `SELECT id, title, summary, cover_image, category, author, is_active, views, publish_date
+       FROM news
        WHERE title LIKE ? OR summary LIKE ? OR content LIKE ?
-       ORDER BY publish_date DESC, id DESC 
+       ORDER BY publish_date DESC, id DESC
        LIMIT ?, ?`,
       [searchTerm, searchTerm, searchTerm, offset, size]
     );

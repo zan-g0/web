@@ -3,6 +3,7 @@ export default {
   path: "/fighting",
   meta: {
     title: "联系我们",
+    icon: "ep:chat-dot-round",
     rank: 6
   },
   children: [

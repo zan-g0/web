@@ -3,6 +3,7 @@ export default {
   path: "/product",
   meta: {
     title: "产品管理",
+    icon: "ep:box",
     rank: 4
   },
   children: [

@@ -1,75 +1,75 @@
 <template>
   <section class="page-bg" v-scroll-animate>
-  <div class="job-page">
-    <h1 class="job-title">招聘岗位</h1>
-    <div class="job-divider"></div>
+    <div class="job-page">
+      <h1 class="job-title">招聘岗位</h1>
+      <div class="job-divider"></div>
 
-    <!-- 工具栏：搜索 -->
-    <div class="toolbar">
-      <input v-model="search" @keyup.enter="reload" placeholder="搜索岗位、类别或要求" />
-      <button @click="reload">搜索</button>
-    </div>
-
-    <div v-if="loading" class="loading">加载中...</div>
-
-    <div v-else>
-      <div v-if="error" class="error">{{ error }}</div>
-      <div v-else-if="jobs.length === 0" class="empty">暂无岗位信息</div>
-
-      <ul class="job-list">
-        <li v-for="job in jobs" :key="job.id" class="job-item" @click="openJobDetail(job)">
-          <div class="item-content">
-            <div class="title">{{ job.title }}</div>
-            <div class="category">{{ job.category }}</div>
-            <div class="date">发布时间：{{ formatDate(job.created_at) }}</div>
-          </div>
-          <div class="arrow">点击查看详情-></div>
-        </li>
-      </ul>
-
-      <!-- 分页控件 -->
-      <div class="pager">
-        <button :disabled="page <= 1" @click="changePage(page - 1)">上一页</button>
-        <span>第 {{ page }} 页 / 共 {{ totalPages }} 页</span>
-        <button :disabled="page >= totalPages" @click="changePage(page + 1)">下一页</button>
+      <!-- 工具栏：搜索 -->
+      <div class="toolbar">
+        <input v-model="search" @keyup.enter="reload" placeholder="搜索岗位、类别或要求" />
+        <button @click="reload">搜索</button>
       </div>
-    </div>
 
-    <!-- Job Detail Modal -->
-    <div v-if="selectedJob" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h2>{{ selectedJob.title }}</h2>
-          <button class="close-btn" @click.stop="closeModal">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-field">
-            <span class="label">岗位类别：</span>
-            <span class="value">{{ selectedJob.category }}</span>
-          </div>
-          <div class="modal-field">
-            <span class="label">薪资范围：</span>
-            <span class="value">{{ selectedJob.salary_range }}</span>
-          </div>
-          <div class="modal-field">
-            <span class="label">招聘人数：</span>
-            <span class="value">{{ selectedJob.vacancy_count ?? '若干' }}</span>
-          </div>
-          <div class="modal-field">
-            <span class="label">发布时间：</span>
-            <span class="value">{{ formatDate(selectedJob.created_at) }}</span>
-          </div>
-          <div class="modal-field">
-            <span class="label">岗位要求：</span>
-            <div class="value requirements">{{ selectedJob.requirements }}</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="close-btn-secondary" @click.stop="closeModal">关闭</button>
+      <div v-if="loading" class="loading">加载中...</div>
+
+      <div v-else>
+        <div v-if="error" class="error">{{ error }}</div>
+        <div v-else-if="jobs.length === 0" class="empty">暂无岗位信息</div>
+
+        <ul class="job-list">
+          <li v-for="job in jobs" :key="job.id" class="job-item" @click="openJobDetail(job)">
+            <div class="item-content">
+              <div class="title">{{ job.title }}</div>
+              <div class="category">{{ job.category }}</div>
+              <div class="date">发布时间：{{ formatDate(job.created_at) }}</div>
+            </div>
+            <div class="arrow">点击查看详情-></div>
+          </li>
+        </ul>
+
+        <!-- 分页控件 -->
+        <div class="pager">
+          <button :disabled="page <= 1" @click="changePage(page - 1)">上一页</button>
+          <span>第 {{ page }} 页 / 共 {{ totalPages }} 页</span>
+          <button :disabled="page >= totalPages" @click="changePage(page + 1)">下一页</button>
         </div>
       </div>
+
+      <!-- Job Detail Modal -->
+      <div v-if="selectedJob" class="modal-overlay" @click="closeModal">
+        <div class="modal-content" @click.stop>
+          <div class="modal-header">
+            <h2>{{ selectedJob.title }}</h2>
+            <button class="close-btn" @click.stop="closeModal">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-field">
+              <span class="label">岗位类别：</span>
+              <span class="value">{{ selectedJob.category }}</span>
+            </div>
+            <div class="modal-field">
+              <span class="label">薪资范围：</span>
+              <span class="value">{{ selectedJob.salary_range }}</span>
+            </div>
+            <div class="modal-field">
+              <span class="label">招聘人数：</span>
+              <span class="value">{{ selectedJob.vacancy_count ?? '若干' }}</span>
+            </div>
+            <div class="modal-field">
+              <span class="label">发布时间：</span>
+              <span class="value">{{ formatDate(selectedJob.created_at) }}</span>
+            </div>
+            <div class="modal-field">
+              <span class="label">岗位要求：</span>
+              <div class="value requirements">{{ selectedJob.requirements }}</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="close-btn-secondary" @click.stop="closeModal">关闭</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
   </section>
 </template>
 
@@ -122,7 +122,7 @@ async function fetchJobs() {
 
     const response = await axiosInstance.get(`/job?${params.toString()}`);
     const data = response.data;
-    
+
     if (data && data.code === 0) {
       jobs.value = data.data?.items || [];
       total.value = data.data?.total || 0;
@@ -180,16 +180,18 @@ onMounted(() => {
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
+
 .toolbar {
   display: flex;
   gap: 8px;
-  margin:12px;
+  margin: 12px;
 }
 
 .toolbar input {
   flex: 1;
   padding: 8px;
 }
+
 .pager {
   display: flex;
   gap: 12px;
@@ -197,6 +199,7 @@ onMounted(() => {
   align-items: center;
   margin-top: 16px;
 }
+
 .loading,
 .empty,
 .error {
@@ -226,15 +229,17 @@ onMounted(() => {
   border-radius: 12px;
   background: white;
   border: 1px solid var(--border-color);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
   cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border-left: 4px solid #2c5e2e;
 }
 
 .job-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--modal-shadow);
   border-color: var(--green);
+  border-left-color: #4caf50;
 }
 
 .job-item:hover .title,
@@ -294,6 +299,7 @@ onMounted(() => {
   background: linear-gradient(180deg, #f6fbf5 0%, #eef7ea 100%);
   min-height: 90vh;
 }
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;

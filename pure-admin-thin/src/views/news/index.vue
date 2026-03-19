@@ -14,8 +14,7 @@
         stripe
         border
         style="width: 100%"
-        :row-style="{ height: '80px' }"
-        :cell-style="{ padding: '12px 0' }"
+        :cell-style="{ padding: '8px 12px' }"
         @sort-change="handleSortChange"
         @selection-change="handleSelectionChange"
       >
@@ -39,14 +38,19 @@
         <el-table-column
           prop="title"
           label="标题"
-          width="200"
+          min-width="180"
           align="left"
           sortable
           fixed="left"
         >
           <template #default="{ row }">
             <div v-if="editingRowId === row.id">
-              <el-input v-model="editableRow.title" size="large" />
+              <el-input
+                v-model="editableRow.title"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 3 }"
+                size="large"
+              />
             </div>
             <div v-else class="title-text">{{ row.title }}</div>
           </template>
@@ -58,7 +62,7 @@
               <el-input
                 v-model="editableRow.summary"
                 type="textarea"
-                rows="2"
+                :autosize="{ minRows: 1, maxRows: 4 }"
                 size="large"
               />
             </div>
@@ -119,14 +123,17 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="状态" width="110" align="center">
+        <el-table-column
+          prop="is_active"
+          label="启用"
+          width="100"
+          align="center"
+        >
           <template #default="{ row }">
-            <el-tag
-              :type="row.status === 'published' ? 'success' : 'info'"
-              size="large"
-            >
-              {{ row.status === "published" ? "已发布" : "草稿" }}
-            </el-tag>
+            <el-switch
+              :model-value="row.is_active === 1"
+              @change="val => onSwitchChange(row, val)"
+            />
           </template>
         </el-table-column>
 
@@ -142,7 +149,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="280" align="center" fixed="right">
+        <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="{ row }">
             <div class="action-buttons">
               <template v-if="editingRowId === row.id">
@@ -163,14 +170,6 @@
                   @click="() => startEdit(row)"
                   >编辑</el-button
                 >
-                <el-button
-                  size="large"
-                  type="success"
-                  plain
-                  @click="() => toggleStatus(row)"
-                >
-                  {{ row.status === "published" ? "下架" : "发布" }}
-                </el-button>
                 <el-button
                   size="large"
                   type="danger"
@@ -323,11 +322,15 @@
 
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio value="draft" size="large">草稿</el-radio>
-                <el-radio value="published" size="large">发布</el-radio>
-              </el-radio-group>
+            <el-form-item label="状态" prop="is_active">
+              <el-switch
+                v-model="form.is_active"
+                :active-value="1"
+                :inactive-value="0"
+                active-text="启用"
+                inactive-text="禁用"
+                size="large"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -386,7 +389,7 @@ interface NewsItem {
   cover_image: string;
   category: string;
   author: string;
-  status: "draft" | "published";
+  is_active: number;
   views: number;
   publish_date: string;
   created_at: string;
@@ -416,7 +419,7 @@ const form = reactive({
   cover_image: "",
   category: "",
   author: "",
-  status: "draft" as "draft" | "published",
+  is_active: 1,
   publish_date: ""
 });
 
@@ -517,7 +520,7 @@ const handleAdd = () => {
   form.cover_image = "";
   form.category = "";
   form.author = "";
-  form.status = "draft";
+  form.is_active = 1;
   form.publish_date = dayjs().format("YYYY-MM-DD HH:mm:ss");
 
   previewUrl.value = null;
@@ -596,21 +599,22 @@ const handleBatchDelete = () => {
     .catch(() => {});
 };
 
-const toggleStatus = async (row: NewsItem) => {
-  const newStatus = row.status === "published" ? "draft" : "published";
-  const action = newStatus === "published" ? "发布" : "下架";
+const onSwitchChange = async (row: any, val: boolean) => {
+  if (!initialized.value) return;
 
-  ElMessageBox.confirm(`确认${action}该新闻？`, "提示", { type: "info" })
-    .then(async () => {
-      try {
-        await updateNewsStatus(row.id, newStatus);
-        row.status = newStatus;
-        ElMessage.success(`${action}成功`);
-      } catch {
-        ElMessage.error(`${action}失败`);
-      }
-    })
-    .catch(() => {});
+  const prevValue = row.is_active;
+  const newValue = val ? 1 : 0;
+
+  row.is_active = newValue;
+
+  try {
+    await updateNewsStatus(row.id, newValue);
+    ElMessage.success(`新闻已${newValue === 1 ? "启用" : "禁用"}`);
+  } catch (error) {
+    console.error("状态更新失败:", error);
+    row.is_active = prevValue;
+    ElMessage.error("状态更新失败");
+  }
 };
 
 const triggerUpload = () => {
@@ -661,7 +665,7 @@ const handleSubmit = async () => {
       cover_image: form.cover_image,
       category: form.category,
       author: form.author,
-      status: form.status,
+      is_active: form.is_active,
       publish_date: form.publish_date
     };
 
@@ -691,14 +695,25 @@ const onImageError = (e: Event) => {
 <style scoped>
 /* 样式保持不变 */
 .news-management .el-table th {
-  padding: 15px 0;
-  font-size: 1.2rem;
+  padding: 12px 0;
+  font-size: 1.15rem;
   font-weight: 600;
   background-color: #f5f7fa;
 }
 
 .news-management .el-table td {
-  padding: 15px 0;
+  padding: 8px 12px;
+  font-size: 1.15rem;
+  vertical-align: top;
+}
+
+/* 穿透 Element Plus 样式 */
+.news-management :deep(.el-table th .cell) {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.news-management :deep(.el-table td .cell) {
   font-size: 1.15rem;
 }
 
@@ -711,14 +726,14 @@ const onImageError = (e: Event) => {
   max-height: 80px;
   padding: 4px 8px;
   overflow-y: auto;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.5;
   background-color: #fafafa;
   border-radius: 4px;
 }
 
 .views-number {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 500;
   color: #409eff;
 }
@@ -748,7 +763,7 @@ const onImageError = (e: Event) => {
 
 .action-buttons .el-button {
   padding: 10px 16px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .no-image-placeholder {
@@ -758,7 +773,7 @@ const onImageError = (e: Event) => {
   justify-content: center;
   width: 140px;
   height: 100px;
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: #909399;
   background-color: #f5f7fa;
   border: 1px dashed #dcdfe6;
@@ -777,6 +792,6 @@ const onImageError = (e: Event) => {
 :deep(.el-tag--large) {
   height: auto;
   padding: 8px 12px;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 </style>

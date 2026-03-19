@@ -254,7 +254,7 @@ export const deleteImage = async (req: Request, res: Response) => {
     }
 
     const uploadDir = getUploadDir(type as UploadType);
-    const filePath = path.join(uploadDir, filename);
+    const filePath = path.join(uploadDir, filename as string);
 
     console.log('删除图片:', { type, filename, path: filePath });
 

@@ -3,6 +3,7 @@ export default {
   path: "/news",
   meta: {
     title: "新闻中心管理",
+    icon: "ep:document",
     rank: 2
   },
   children: [
