@@ -1,6 +1,8 @@
 node_modules
+.pnpm-store
+.npm
 dist
-.vscode/*
+.vscode/
 
 # 环境变量文件
 .env
